@@ -156,14 +156,16 @@ h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.01em; }
 .hub-cab h1 { font-size: 2.7rem; text-shadow: 0 4px 0 rgba(0, 0, 0, .25); }
 .hub-cab p { margin: 2px 0 0; color: var(--suave); font-size: 1.1rem; }
 
-.juegos { display: flex; flex-direction: column; gap: 18px; margin-top: 22px; }
+.juegos { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 22px; }
+.juegos > :last-child:nth-child(odd) { grid-column: span 2; }
+.juegos.ayudas { margin-top: 0; }
 
 .tarjeta-juego {
-  display: flex; align-items: center; gap: 14px;
-  text-align: left;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  text-align: center;
   border: 0;
   border-radius: 26px;
-  padding: 18px 16px 18px 14px;
+  padding: 16px 10px 16px;
   color: #fff;
   background: linear-gradient(180deg, rgba(255, 255, 255, .25), rgba(255, 255, 255, 0) 60%), var(--c);
   box-shadow: 0 7px 0 var(--s), 0 14px 24px rgba(0, 0, 0, .3);
@@ -173,14 +175,17 @@ h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.01em; }
 .tarjeta-juego:active { transform: translateY(6px); box-shadow: 0 1px 0 var(--s); }
 .tarjeta-juego.amarillo { color: #4a2c00; }
 .tarjeta-juego .emo {
-  font-size: 2.6rem; width: 66px; height: 66px; flex: none;
+  font-size: 2.5rem; width: 64px; height: 64px; flex: none;
   display: grid; place-items: center;
   background: rgba(255, 255, 255, .3); border-radius: 20px;
 }
-.tarjeta-juego .txt { flex: 1; display: flex; flex-direction: column; }
-.tarjeta-juego b { font-size: 1.5rem; line-height: 1.1; }
-.tarjeta-juego small { font-size: .98rem; opacity: .9; margin-top: 3px; font-weight: 700; }
-.tarjeta-juego .flecha { font-family: var(--fuente); font-size: 2.2rem; opacity: .7; }
+.tarjeta-juego .txt { display: flex; flex-direction: column; }
+.tarjeta-juego b { font-size: 1.3rem; line-height: 1.1; }
+.tarjeta-juego small { font-size: .88rem; opacity: .92; margin-top: 4px; font-weight: 700; line-height: 1.25; }
+.juegos > .tarjeta-juego:last-child:nth-child(odd) { flex-direction: row; text-align: left; padding-left: 14px; }
+.ayudas .tarjeta-juego { padding: 12px 10px; }
+.ayudas .tarjeta-juego .emo { width: 50px; height: 50px; font-size: 1.9rem; border-radius: 16px; }
+.ayudas .tarjeta-juego b { font-size: 1.1rem; }
 
 .titulito { font-size: 1.1rem; color: var(--suave); margin: 28px 0 10px; text-align: center; }
 .proximos { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
@@ -354,7 +359,7 @@ h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.01em; }
 .flash.paso { background: var(--naranja); }
 .flash.fin { background: var(--rojo); }
 
-.qs-final .puntaje { text-align: center; margin-top: 4px; }
+.puntaje { text-align: center; margin-top: 4px; }
 .gran-num {
   font-family: var(--fuente); font-size: 7rem; line-height: 1; font-weight: 700;
   color: var(--c); text-shadow: 0 7px 0 rgba(0, 0, 0, .3);
@@ -511,3 +516,115 @@ h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.01em; }
   .ilus-frente { height: 120px; }
   .ilus-cara { font-size: 4.6rem; }
 }
+
+/* =========================================================
+   Sorteo de equipos
+   ========================================================= */
+
+.equipos #agregar { margin-bottom: 18px; }
+.equipos #sortear { align-self: center; }
+.equipos-res { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+.equipo-tarjeta {
+  background: var(--c); box-shadow: 0 5px 0 var(--s);
+  border-radius: 20px; padding: 12px 16px; display: flex; flex-direction: column; gap: 2px;
+}
+.equipo-tarjeta.amarillo { color: #4a2c00; }
+.equipo-tarjeta b { font-size: 1.3rem; }
+.equipo-tarjeta span { font-size: 1.05rem; }
+.equipo-tarjeta.sale { animation: saltar .45s cubic-bezier(.2, 1.6, .4, 1) backwards; }
+.equipos > .btn.grande { margin-top: 22px; }
+
+/* =========================================================
+   Turnos por equipo (Tabú y Mímica)
+   ========================================================= */
+
+.ilus-grande { font-size: 5rem; text-align: center; margin: 4px 0 6px; animation: bailar 2.5s ease-in-out infinite; }
+
+.turno { text-align: center; }
+.vuelta { color: var(--suave); margin: 0 0 10px; }
+.marcador { display: flex; gap: 8px; justify-content: center; }
+.marca {
+  flex: 1; max-width: 120px; border-radius: 16px; padding: 8px 4px;
+  background: rgba(255, 255, 255, .06); border: 3px solid transparent;
+  display: flex; flex-direction: column; align-items: center;
+}
+.marca small { font-size: .82rem; color: var(--suave); white-space: nowrap; }
+.marca b { font-size: 1.8rem; line-height: 1.1; }
+.marca.activo { border-color: var(--c); background: color-mix(in srgb, var(--c) 22%, transparent); }
+.turno-de {
+  margin: 22px 0 10px; padding: 22px 16px; border-radius: 28px;
+  background: var(--c); box-shadow: 0 7px 0 var(--s), 0 14px 24px rgba(0, 0, 0, .3);
+  animation: saltar .45s cubic-bezier(.2, 1.6, .4, 1);
+}
+.turno-de.amarillo { color: #4a2c00; }
+.turno-de small { font-size: 1.05rem; opacity: .9; }
+.turno-de b { display: block; font-size: 2.4rem; margin: 2px 0; }
+.turno-de p { margin: 6px 0 0; font-size: 1.15rem; }
+.turno-de strong { font-family: var(--fuente); font-size: 1.5rem; }
+.turno .btn { margin-top: auto; }
+
+.p-juego { padding-bottom: calc(var(--abajo) + 18px); max-width: none; }
+.p-juego.juego-tabu { background: linear-gradient(180deg, #ff8a3d, #e8642a); }
+.p-juego.juego-mimica { background: linear-gradient(180deg, #8f6bff, #6a47e0); }
+.p-carta { flex: 1; display: grid; place-items: center; padding: 14px 0; }
+.p-carta .tarjeta {
+  width: 100%; max-width: 420px; background: var(--blanco); color: #2a1640; border-radius: 30px;
+  padding: 24px 18px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  box-shadow: 0 8px 0 rgba(0, 0, 0, .25), 0 18px 34px rgba(0, 0, 0, .3);
+}
+.p-carta .tarjeta.entra { animation: saltar .3s cubic-bezier(.2, 1.6, .4, 1); }
+.p-carta small { color: #6f5f96; font-size: 1rem; }
+.t-palabra { font-size: clamp(2rem, 11vw, 3.2rem); line-height: 1.05; overflow-wrap: anywhere; }
+.juego-tabu .t-palabra { color: var(--naranja-s); padding-bottom: 10px; border-bottom: 3px dashed #e7d8c0; width: 100%; }
+.prohibidas { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; width: 100%; }
+.prohibidas li { font-family: var(--fuente); font-size: 1.45rem; font-weight: 600; background: #ffe3e6; color: var(--rojo-s); border-radius: 12px; padding: 6px; }
+.tiempo-fuera { font-family: var(--fuente); font-size: 16vw; color: #fff; text-shadow: 0 6px 0 rgba(0, 0, 0, .25); animation: saltar .4s cubic-bezier(.2, 1.6, .4, 1); }
+.p-botones { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 12px; }
+.p-botones .btn { padding: 24px 6px; font-size: 1.35rem; }
+.p-juego .reloj { background: conic-gradient(#fff calc(var(--p) * 360deg), rgba(0, 0, 0, .18) 0); }
+.p-juego .reloj > span { background: var(--naranja-s); color: #fff; }
+.juego-mimica .reloj > span { background: var(--violeta-s); }
+.p-juego .contador { color: #fff; }
+
+.resumen .gran-num { color: var(--amarillo); }
+.lista-res li { cursor: pointer; }
+.lista-res li.tabu { background: rgba(255, 77, 94, .16); }
+.lista-res li.tabu span { background: var(--rojo); }
+
+.final-equipos { text-align: center; }
+.copa { font-size: 6rem; animation: bailar 1.4s ease-in-out infinite; }
+.final-equipos h2 { font-size: 2.1rem; color: var(--amarillo); }
+.podio { list-style: none; padding: 0; margin: 20px 0 0; display: flex; flex-direction: column; gap: 10px; }
+.podio li {
+  display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 20px;
+  background: var(--c); box-shadow: 0 5px 0 var(--s); font-size: 1.2rem;
+}
+.podio li.amarillo { color: #4a2c00; }
+.podio li span { font-size: 1.7rem; width: 36px; }
+.podio li b { flex: 1; text-align: left; }
+.podio li strong { font-family: var(--fuente); font-size: 1.8rem; }
+
+/* =========================================================
+   La Bomba
+   ========================================================= */
+
+.bomba-ilus { text-align: center; margin: 6px 0; }
+.bomba-emo { display: inline-block; font-size: 7rem; line-height: 1; }
+.bomba-inicio .bomba-emo { animation: bailar 1.6s ease-in-out infinite; }
+.bomba-juego { background: radial-gradient(circle at 50% 60%, #4a1f3a, #241640 70%); max-width: none; text-align: center; }
+.bomba-titulo { font-family: var(--fuente); font-size: 1.4rem; color: var(--amarillo); }
+.bomba-centro { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+.bomba-centro small { color: var(--suave); font-size: 1.1rem; }
+.bomba-centro b { font-size: clamp(2rem, 10vw, 3rem); line-height: 1.1; max-width: 100%; overflow-wrap: anywhere; }
+.bomba-centro .bomba-emo { font-size: 9rem; margin-top: 18px; filter: drop-shadow(0 10px 20px rgba(255, 77, 94, .45)); }
+.bomba-emo.tic { animation: tic .2s ease-out; }
+@keyframes tic { 40% { transform: scale(1.12) rotate(-4deg); } }
+.bomba-juego #otra { align-self: center; }
+.bomba-boom {
+  background: radial-gradient(circle, #ffc93c, #ff8a3d 40%, #ff4d5e 75%); max-width: none;
+  text-align: center; justify-content: center; color: #fff;
+}
+.boom { font-size: 10rem; line-height: 1; animation: saltar .5s cubic-bezier(.2, 1.6, .4, 1); }
+.bomba-boom h2 { font-size: 4.5rem; text-shadow: 0 6px 0 rgba(0, 0, 0, .2); }
+.bomba-boom p { font-size: 1.4rem; font-family: var(--fuente); margin: 4px 0 0; }
+.bomba-boom .acciones { margin-top: 40px; }

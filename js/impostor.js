@@ -33,42 +33,9 @@ const Impostor = (() => {
       </div>
       <button class="btn grande rosa" id="repartir">Repartir cartas</button>` });
 
-    const lista = p.querySelector('#lista');
-    function pintar() {
-      lista.innerHTML = jugadores.map((j, i) => `
-        <div class="jugador">
-          <span class="num">${i + 1}</span>
-          <input type="text" maxlength="16" placeholder="Jugador ${i + 1}" value="${App.esc(j)}" data-i="${i}" autocomplete="off" autocapitalize="words" enterkeyhint="next">
-          <button class="quitar" data-q="${i}" aria-label="Quitar" ${jugadores.length <= MIN ? 'disabled' : ''}>✕</button>
-        </div>`).join('');
-      p.querySelector('#agregar').disabled = jugadores.length >= MAX;
-    }
-    pintar();
-    lista.addEventListener('input', e => {
-      if (e.target.dataset.i == null) return;
-      jugadores[+e.target.dataset.i] = e.target.value;
-      App.guardar('impostor:jugadores', jugadores);
+    App.listaJugadores(p.querySelector('#lista'), p.querySelector('#agregar'), jugadores, {
+      min: MIN, max: MAX, alCambiar: () => App.guardar('impostor:jugadores', jugadores),
     });
-    lista.addEventListener('keydown', e => {
-      if (e.key !== 'Enter') return;
-      e.preventDefault();
-      const sig = lista.querySelector(`[data-i="${+e.target.dataset.i + 1}"]`);
-      sig ? sig.focus() : e.target.blur();
-    });
-    lista.addEventListener('click', e => {
-      const b = e.target.closest('[data-q]');
-      if (!b || jugadores.length <= MIN) return;
-      jugadores.splice(+b.dataset.q, 1);
-      App.guardar('impostor:jugadores', jugadores);
-      pintar();
-    });
-    p.querySelector('#agregar').onclick = () => {
-      if (jugadores.length >= MAX) return;
-      jugadores.push('');
-      App.guardar('impostor:jugadores', jugadores);
-      pintar();
-      lista.querySelector(`[data-i="${jugadores.length - 1}"]`).focus();
-    };
     p.querySelectorAll('#cats .chip').forEach(b => {
       b.onclick = () => {
         cat = b.dataset.k;

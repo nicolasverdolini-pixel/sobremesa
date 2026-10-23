@@ -85,6 +85,45 @@ const App = (() => {
     });
   }
 
+  // Lista editable de nombres (la usan el Impostor y el sorteo de equipos). Modifica `arr` en el lugar.
+  function listaJugadores(lista, agregar, arr, { min = 0, max = 12, alCambiar = () => {} } = {}) {
+    function pintar() {
+      lista.innerHTML = arr.map((j, i) => `
+        <div class="jugador">
+          <span class="num">${i + 1}</span>
+          <input type="text" maxlength="16" placeholder="Jugador ${i + 1}" value="${esc(j)}" data-i="${i}" autocomplete="off" autocapitalize="words" enterkeyhint="next">
+          <button class="quitar" data-q="${i}" aria-label="Quitar" ${arr.length <= min ? 'disabled' : ''}>✕</button>
+        </div>`).join('');
+      agregar.disabled = arr.length >= max;
+    }
+    pintar();
+    lista.addEventListener('input', e => {
+      if (e.target.dataset.i == null) return;
+      arr[+e.target.dataset.i] = e.target.value;
+      alCambiar();
+    });
+    lista.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      const sig = lista.querySelector(`[data-i="${+e.target.dataset.i + 1}"]`);
+      sig ? sig.focus() : e.target.blur();
+    });
+    lista.addEventListener('click', e => {
+      const b = e.target.closest('[data-q]');
+      if (!b || arr.length <= min) return;
+      arr.splice(+b.dataset.q, 1);
+      alCambiar();
+      pintar();
+    });
+    agregar.onclick = () => {
+      if (arr.length >= max) return;
+      arr.push('');
+      alCambiar();
+      pintar();
+      lista.querySelector(`[data-i="${arr.length - 1}"]`).focus();
+    };
+  }
+
   function confeti(n = 110) {
     const c = document.createElement('div');
     c.className = 'confeti';
@@ -107,12 +146,22 @@ const App = (() => {
   const JUEGOS = [
     { id: 'quiensoy', nombre: '¿Quién soy?', bajada: 'Adiviná con el celu en la frente', emoji: '🤔', color: 'amarillo', ir: () => QuienSoy.inicio() },
     { id: 'impostor', nombre: 'El Impostor', bajada: 'Uno no sabe la palabra. ¿Quién es?', emoji: '🕵️', color: 'rosa', ir: () => Impostor.inicio() },
-    { id: 'truco', nombre: 'Anotador de Truco', bajada: 'Nosotros y Ellos, con fósforos', emoji: '🃏', color: 'verde', ir: () => Truco.inicio() },
+    { id: 'tabu', nombre: 'Tabú', bajada: 'Hacé adivinar sin decir las prohibidas', emoji: '🤐', color: 'naranja', ir: () => Tabu.inicio() },
+    { id: 'mimica', nombre: 'Mímica', bajada: 'Actuá la palabra sin hablar', emoji: '🙌', color: 'violeta', ir: () => Mimica.inicio() },
+    { id: 'bomba', nombre: 'La Bomba', bajada: 'Pasala antes de que explote', emoji: '💣', color: 'rojo', ir: () => Bomba.inicio() },
+    { id: 'truco', tipo: 'ayuda', nombre: 'Anotador de Truco', bajada: 'Nosotros y Ellos, con fósforos', emoji: '🃏', color: 'verde', ir: () => Truco.inicio() },
+    { id: 'equipos', tipo: 'ayuda', nombre: 'Sorteo de equipos', bajada: 'Armá equipos al azar', emoji: '🎲', color: 'celeste', ir: () => Equipos.inicio() },
   ];
-  const PROXIMOS = ['Tabú', 'Mímica', 'La Bomba', 'Lobo', '¿Qué preferís?', 'Yo nunca nunca', 'Tutti frutti', 'Trivia', 'Chinchón', 'Generala', 'Sorteo de equipos'];
+  const PROXIMOS = ['Lobo', '¿Qué preferís?', 'Yo nunca nunca', 'Tutti frutti', 'Trivia', 'Chinchón', 'Generala'];
 
   const esIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const instalada = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+
+  const tarjeta = (j, i) => `
+    <button class="tarjeta-juego ${j.color}" data-juego="${j.id}" style="animation-delay:${i * 60}ms">
+      <span class="emo">${j.emoji}</span>
+      <span class="txt"><b>${j.nombre}</b><small>${j.bajada}</small></span>
+    </button>`;
 
   function menu() {
     despierto(false);
@@ -123,14 +172,9 @@ const App = (() => {
         <h1>Sobremesa</h1>
         <p>Juegos para la juntada</p>
       </header>
-      <div class="juegos">
-        ${JUEGOS.map((j, i) => `
-          <button class="tarjeta-juego ${j.color}" data-juego="${j.id}" style="animation-delay:${i * 70}ms">
-            <span class="emo">${j.emoji}</span>
-            <span class="txt"><b>${j.nombre}</b><small>${j.bajada}</small></span>
-            <span class="flecha">›</span>
-          </button>`).join('')}
-      </div>
+      <div class="juegos">${JUEGOS.filter(j => !j.tipo).map(tarjeta).join('')}</div>
+      <h2 class="titulito">Para anotar y organizar</h2>
+      <div class="juegos ayudas">${JUEGOS.filter(j => j.tipo).map(tarjeta).join('')}</div>
       <h2 class="titulito">Próximamente</h2>
       <div class="proximos">${PROXIMOS.map(n => `<span>${n}</span>`).join('')}</div>
       ${esIOS && !instalada() ? `<div class="instalar">📲 <b>Instalala en tu iPhone:</b> tocá <b>Compartir</b> <span class="ico-compartir">⬆︎</span> y después <b>Agregar a inicio</b>. Así se abre a pantalla completa.</div>` : ''}
@@ -152,5 +196,5 @@ const App = (() => {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   }
 
-  return { esc, leer, guardar, mezclar, sacar, vibrar, despierto, pantalla, alSalir, preguntar, confeti, menu };
+  return { esc, leer, guardar, mezclar, sacar, vibrar, despierto, pantalla, alSalir, preguntar, listaJugadores, confeti, menu };
 })();

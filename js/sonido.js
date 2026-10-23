@@ -105,6 +105,16 @@ const Sonido = (() => {
       ruido(0.25, { vol: 0.08, cuando: 0.06, filtro: 700, q: 0.5, tipo: 'lowpass' });
       tono(880, 0.08, { vol: 0.1, cuando: 0.02 });
     },
+    // Tic-tac de reloj de madera; `avance` (0 a 1) lo vuelve más agudo.
+    tictac(avance = 0) {
+      ruido(0.03, { vol: 0.3, filtro: 2500 + avance * 1500, q: 4 });
+      tono(1500 + avance * 600, 0.03, { tipo: 'square', vol: 0.05 });
+    },
+    boom() {
+      ruido(1.6, { vol: 0.9, filtro: 400, q: 0.4, tipo: 'lowpass' });
+      ruido(0.4, { vol: 0.5, filtro: 1500, q: 0.5 });
+      tono(90, 1.2, { tipo: 'sine', vol: 0.6, hasta: 30 });
+    },
     restar() { tono(330, 0.18, { vol: 0.18, hasta: 220 }); },
   };
 })();
