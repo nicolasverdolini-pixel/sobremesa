@@ -1,0 +1,132 @@
+// Las palabras de todos los juegos, agrupadas por categoría.
+// Para sumar palabras alcanza con agregarlas a la lista que corresponda.
+
+const PALABRAS = {
+  famosos: {
+    nombre: 'Famosos argentinos', emoji: '🌟', color: '#ffc93c',
+    palabras: [
+      'Lionel Messi', 'Diego Maradona', 'Mirtha Legrand', 'Susana Giménez', 'Marcelo Tinelli', 'Ricardo Darín',
+      'Guillermo Francella', 'Tini Stoessel', 'Lali Espósito', 'Bizarrap', 'Duki', 'María Becerra', 'Nicki Nicole',
+      'Charly García', 'Luis Alberto Spinetta', 'Gustavo Cerati', 'Fito Páez', 'Mercedes Sosa', 'Gilda', 'Rodrigo',
+      'Jorge Luis Borges', 'Julio Cortázar', 'Quino', 'Papa Francisco', 'Eva Perón', 'Che Guevara', 'Manu Ginóbili',
+      'Gabriela Sabatini', 'Juan Martín del Potro', 'Lionel Scaloni', 'Dibu Martínez', 'Wanda Nara', 'Moria Casán',
+      'Carlos Gardel', 'Astor Piazzolla', 'Les Luthiers', 'Abel Pintos', 'La Sole', 'La Mona Jiménez', 'Guido Kaczka',
+      'Mario Pergolini', 'Juana Viale', 'Pampita', 'Luisana Lopilato', 'Antonela Roccuzzo', 'Norma Aleandro',
+      'Peter Lanzani', 'Adrián Suar', 'Florencia Peña', 'Ricardo Fort', 'Yanina Latorre', 'L-Gante', 'Trueno',
+      'Emilia Mernes', 'Paulo Londra', 'Sandro', 'Palito Ortega', 'Valeria Lynch', 'Luciana Aymar', 'Guillermo Vilas',
+      'Juan Manuel Fangio', 'René Favaloro', 'Diego Torres', 'Axel', 'Coscu', 'Fátima Florez', 'Jorge Lanata',
+      'Soledad Silveyra', 'Facundo Arana', 'Natalia Oreiro', 'Andrés Calamaro', 'Ciro y Los Persas', 'Divididos',
+      'Ricardo Montaner', 'Los Fabulosos Cadillacs', 'Marley', 'Ángela Torres', 'Jorge Rial', 'Juanse',
+    ],
+  },
+  peliculas: {
+    nombre: 'Películas', emoji: '🎬', color: '#ff5d8f',
+    palabras: [
+      'Titanic', 'El Rey León', 'Toy Story', 'Harry Potter', 'Star Wars', 'Jurassic Park', 'Shrek', 'Frozen', 'Avatar',
+      'Matrix', 'El Padrino', 'Volver al Futuro', 'Rocky', 'Terminator', 'Buscando a Nemo', 'Los Increíbles', 'Coco',
+      'Intensa-Mente', 'Ratatouille', 'Mi Pobre Angelito', 'E.T.', 'Tiburón', 'Indiana Jones', 'Piratas del Caribe',
+      'El Señor de los Anillos', 'Barbie', 'Oppenheimer', 'Top Gun', 'Rápidos y Furiosos', 'Avengers', 'Spider-Man',
+      'Batman', 'Superman', 'Wall-E', 'Up', 'Monsters Inc.', 'La Sirenita', 'Aladdín', 'La Bella y la Bestia',
+      'Cenicienta', 'Mulán', 'Moana', 'Encanto', 'Kung Fu Panda', 'Madagascar', 'La Era de Hielo', 'Mi Villano Favorito',
+      'Esperando la carroza', 'Relatos Salvajes', 'El secreto de sus ojos', 'Nueve Reinas', 'Argentina, 1985',
+      'El Exorcista', 'Forrest Gump', 'Gladiador', 'Mamma Mia', 'Grease', 'Hombres de Negro', 'Los Cazafantasmas',
+      'Jumanji', 'Karate Kid', 'Mary Poppins', 'Pinocho', 'Dumbo', 'Bambi', 'Hércules', 'Tarzán', 'El Mago de Oz',
+      'King Kong', 'Pulp Fiction', 'Joker', 'Rambo', 'Mad Max', 'Duro de matar', 'Lilo y Stitch', 'Bichos',
+    ],
+  },
+  animales: {
+    nombre: 'Animales', emoji: '🦁', color: '#3ccf7e',
+    palabras: [
+      'Perro', 'Gato', 'Elefante', 'Jirafa', 'León', 'Tigre', 'Mono', 'Canguro', 'Pingüino', 'Delfín', 'Tiburón',
+      'Ballena', 'Pulpo', 'Cocodrilo', 'Serpiente', 'Tortuga', 'Caracol', 'Mariposa', 'Abeja', 'Mosquito', 'Araña',
+      'Hormiga', 'Gallina', 'Vaca', 'Caballo', 'Chancho', 'Oveja', 'Cabra', 'Burro', 'Pato', 'Búho', 'Loro', 'Águila',
+      'Flamenco', 'Avestruz', 'Carpincho', 'Hornero', 'Yaguareté', 'Llama', 'Cóndor', 'Ñandú', 'Mulita', 'Zorro',
+      'Lobo', 'Oso', 'Oso panda', 'Koala', 'Hipopótamo', 'Rinoceronte', 'Cebra', 'Camello', 'Murciélago', 'Ardilla',
+      'Conejo', 'Hámster', 'Ratón', 'Rana', 'Medusa', 'Estrella de mar', 'Cangrejo', 'Foca', 'Morsa', 'Lombriz',
+      'Camaleón', 'Pavo real', 'Gorila', 'Perezoso', 'Mapache', 'Grillo', 'Cucaracha', 'Gallo', 'Pez globo', 'Puma',
+    ],
+  },
+  objetos: {
+    nombre: 'Objetos', emoji: '🧉', color: '#3cc4ff',
+    palabras: [
+      'Mate', 'Termo', 'Bombilla', 'Paraguas', 'Tijera', 'Cepillo de dientes', 'Control remoto', 'Celular',
+      'Auriculares', 'Anteojos', 'Reloj', 'Llave', 'Billetera', 'Mochila', 'Sartén', 'Pava', 'Heladera', 'Lavarropas',
+      'Microondas', 'Licuadora', 'Ventilador', 'Estufa', 'Almohada', 'Sillón', 'Escoba', 'Balde', 'Martillo',
+      'Destornillador', 'Linterna', 'Vela', 'Espejo', 'Peine', 'Secador de pelo', 'Plancha', 'Bicicleta', 'Pelota',
+      'Guitarra', 'Valija', 'Carpa', 'Parrilla', 'Sombrilla', 'Ojotas', 'Zapatillas', 'Bufanda', 'Guantes', 'Corbata',
+      'Lápiz', 'Goma de borrar', 'Calculadora', 'Abrochadora', 'Globo', 'Cuchara', 'Tenedor', 'Taza', 'Botella',
+      'Tupper', 'Rallador', 'Destapador', 'Encendedor', 'Cinta adhesiva', 'Brújula', 'Lupa', 'Inodoro', 'Ducha',
+      'Escalera', 'Trampolín', 'Hamaca', 'Pala', 'Sacacorchos', 'Mouse', 'Teclado', 'Silbato', 'Barbijo', 'Cuchillo',
+    ],
+  },
+  futbolistas: {
+    nombre: 'Futbolistas', emoji: '⚽', color: '#ff8a3d',
+    palabras: [
+      'Lionel Messi', 'Diego Maradona', 'Cristiano Ronaldo', 'Neymar', 'Kylian Mbappé', 'Erling Haaland',
+      'Ángel Di María', 'Dibu Martínez', 'Julián Álvarez', 'Lautaro Martínez', 'Enzo Fernández', 'Alexis Mac Allister',
+      'Rodrigo De Paul', 'Cuti Romero', 'Nicolás Otamendi', 'Paulo Dybala', 'Kun Agüero', 'Gonzalo Higuaín',
+      'Carlos Tévez', 'Juan Román Riquelme', 'Martín Palermo', 'Gabriel Batistuta', 'Mario Kempes', 'Javier Zanetti',
+      'Javier Mascherano', 'Pablo Aimar', 'Ariel Ortega', 'Enzo Francescoli', 'Hernán Crespo', 'Claudio Caniggia',
+      'Daniel Passarella', 'Pelé', 'Ronaldinho', 'Ronaldo Nazário', 'Zinedine Zidane', 'Luka Modrić', 'Andrés Iniesta',
+      'Xavi', 'Sergio Ramos', 'Iker Casillas', 'Gianluigi Buffon', 'Luis Suárez', 'Edinson Cavani', 'Zlatan Ibrahimović',
+      'Mohamed Salah', 'Robert Lewandowski', 'Vinícius Jr.', 'Jude Bellingham', 'Lamine Yamal', 'Kevin De Bruyne',
+      'Thierry Henry', 'David Beckham', 'Wayne Rooney', 'Franco Armani', 'Marcelo Gallardo', 'Sergio Goycochea',
+      'Juan Sebastián Verón', 'Esteban Cambiasso', 'Gabriel Heinze', 'Diego Simeone', 'Johan Cruyff', 'Franz Beckenbauer',
+    ],
+  },
+  personajes: {
+    nombre: 'Personajes', emoji: '🦸', color: '#8f6bff',
+    palabras: [
+      'Homero Simpson', 'Bart Simpson', 'Mafalda', 'Patoruzú', 'El Chavo del 8', 'Batman', 'Superman', 'Spider-Man',
+      'Harry Potter', 'Darth Vader', 'Yoda', 'Mickey Mouse', 'Bob Esponja', 'Shrek', 'Pikachu', 'Mario Bros', 'Sonic',
+      'Pinocho', 'Caperucita Roja', 'Blancanieves', 'Cenicienta', 'Elsa', 'Peter Pan', 'Garfield', 'Snoopy',
+      'Scooby-Doo', 'Pato Donald', 'Goofy', 'Winnie Pooh', 'Dora la Exploradora', 'Peppa Pig', 'Woody',
+      'Buzz Lightyear', 'Nemo', 'Dory', 'Simba', 'Pumba', 'Hulk', 'Iron Man', 'Capitán América', 'Thor',
+      'Mujer Maravilla', 'El Guasón', 'Gollum', 'Gandalf', 'Sherlock Holmes', 'Drácula', 'Frankenstein', 'Papá Noel',
+      'Ratón Pérez', 'Don Quijote', 'El Principito', 'Manuelita la tortuga', 'Clemente', 'Isidoro Cañones', 'Condorito',
+      'Hijitus', 'Un Minion', 'Stitch', 'Barbie', 'El Grinch', 'Jack Sparrow', 'Willy Wonka', 'Tarzán', 'Robin Hood',
+      'Wolverine', 'Chucky', 'La Llorona', 'El Zorro', 'Tom y Jerry', 'Bugs Bunny', 'El Correcaminos', 'Pac-Man',
+    ],
+  },
+  lugares: {
+    nombre: 'Lugares', emoji: '🏖️', color: '#3cc4ff',
+    palabras: [
+      'Playa', 'Hospital', 'Escuela', 'Cancha de fútbol', 'Aeropuerto', 'Supermercado', 'Banco', 'Cine', 'Restaurante',
+      'Gimnasio', 'Iglesia', 'Cárcel', 'Biblioteca', 'Zoológico', 'Circo', 'Boliche', 'Peluquería', 'Farmacia',
+      'Estación de servicio', 'Subte', 'Colectivo', 'Avión', 'Crucero', 'Submarino', 'Estación espacial', 'Camping',
+      'Hotel', 'Casino', 'Museo', 'Parque de diversiones', 'Kiosco', 'Verdulería', 'Panadería', 'Cementerio',
+      'Comisaría', 'Bar', 'Casamiento', 'Fiesta de 15', 'Asado familiar', 'Montaña', 'Desierto', 'Selva', 'Polo Norte',
+      'Isla desierta', 'Oficina', 'Facultad', 'Shopping', 'Feria', 'Laboratorio', 'Granja', 'Pileta', 'Teatro',
+    ],
+  },
+  comidas: {
+    nombre: 'Comidas', emoji: '🥟', color: '#ff8a3d',
+    palabras: [
+      'Asado', 'Empanadas', 'Milanesa', 'Pizza', 'Ñoquis', 'Locro', 'Choripán', 'Dulce de leche', 'Alfajor',
+      'Medialunas', 'Fernet', 'Mate', 'Helado', 'Sushi', 'Hamburguesa', 'Tacos', 'Provoleta', 'Matambre',
+      'Pastel de papa', 'Tarta de jamón y queso', 'Ravioles', 'Canelones', 'Flan', 'Chocotorta', 'Facturas', 'Churros',
+      'Pochoclo', 'Garrapiñada', 'Panchos', 'Sándwich de miga', 'Humita', 'Tortilla de papas', 'Guiso de lentejas',
+      'Puchero', 'Vitel toné', 'Pan dulce', 'Rosca de Pascua', 'Bife de chorizo', 'Ensalada rusa', 'Arroz con leche',
+      'Panqueques', 'Torta frita', 'Chipá', 'Polenta', 'Fideos con tuco', 'Sopa', 'Pollo al horno', 'Lemon pie',
+    ],
+  },
+  profesiones: {
+    nombre: 'Profesiones', emoji: '👩‍🚒', color: '#ff5d8f',
+    palabras: [
+      'Médico', 'Bombero', 'Policía', 'Maestra', 'Cocinero', 'Albañil', 'Plomero', 'Electricista', 'Abogado',
+      'Dentista', 'Veterinario', 'Peluquero', 'Taxista', 'Piloto de avión', 'Astronauta', 'Futbolista', 'Actor',
+      'Cantante', 'Periodista', 'Programador', 'Contador', 'Arquitecto', 'Panadero', 'Carnicero', 'Jardinero',
+      'Mecánico', 'Cartero', 'Payaso', 'Mago', 'Árbitro', 'Enfermera', 'Psicólogo', 'Fotógrafo', 'Guardavidas',
+      'Kiosquero', 'Repartidor', 'Influencer', 'Paseador de perros', 'Bibliotecario', 'Pescador', 'Cura', 'Juez',
+    ],
+  },
+  deportes: {
+    nombre: 'Deportes', emoji: '🏀', color: '#3ccf7e',
+    palabras: [
+      'Fútbol', 'Básquet', 'Tenis', 'Rugby', 'Hockey', 'Vóley', 'Natación', 'Boxeo', 'Golf', 'Polo', 'Pato', 'Pádel',
+      'Ciclismo', 'Atletismo', 'Esquí', 'Surf', 'Skate', 'Patinaje', 'Handball', 'Ping pong', 'Ajedrez', 'Bowling',
+      'Karate', 'Judo', 'Esgrima', 'Remo', 'Escalada', 'Fórmula 1', 'Maratón', 'Gimnasia artística', 'Buceo',
+      'Paracaidismo', 'Equitación', 'Béisbol', 'Lucha libre', 'Bochas', 'Kayak', 'Tiro con arco',
+    ],
+  },
+};
