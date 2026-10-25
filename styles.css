@@ -748,3 +748,88 @@ h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.01em; }
   .cr-pista { min-height: 52px; margin: 8px 0 6px; }
   .cr-herramientas .herr span { height: 34px; }
 }
+
+/* =========================================================
+   Racimo
+   ========================================================= */
+
+.rf {
+  width: 100%; height: 100%; border-radius: 26%;
+  display: grid; place-items: center;
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, .55), transparent 40%), var(--c);
+  box-shadow: inset 0 -4px 0 var(--s), 0 2px 4px rgba(0, 0, 0, .3);
+  color: rgba(255, 255, 255, .85); font-size: 1.05rem; line-height: 1;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, .2);
+}
+.rf.amarillo { color: rgba(120, 70, 0, .65); }
+.rf.comodin {
+  background: conic-gradient(var(--amarillo), var(--rosa), var(--violeta), var(--celeste), var(--verde), var(--amarillo));
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .25), 0 2px 4px rgba(0, 0, 0, .3); color: #fff; font-size: 1.3rem;
+}
+.rf.piedra {
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, .3), transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(0, 0, 0, .18) 8%, transparent 9%),
+    radial-gradient(circle at 25% 65%, rgba(0, 0, 0, .15) 6%, transparent 7%),
+    #8b8296;
+  box-shadow: inset 0 -4px 0 #5a5266, 0 2px 4px rgba(0, 0, 0, .3);
+  border-radius: 34%;
+}
+.rf.piedra.p1 {
+  background:
+    linear-gradient(125deg, transparent 46%, #3d3547 47%, #3d3547 51%, transparent 52%),
+    linear-gradient(35deg, transparent 56%, #3d3547 57%, #3d3547 60%, transparent 61%),
+    #a39bad;
+}
+.rf.piedra.p3 { background-color: #6c6478; }
+
+.rf.cae { animation: rc-cae .25s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes rc-cae { from { transform: scale(1.4); opacity: .3; } }
+.rf.explota { animation: rc-explota .3s ease-in forwards; }
+@keyframes rc-explota { 40% { transform: scale(1.25); filter: brightness(1.6); } to { transform: scale(0); opacity: 0; } }
+.rf.contagia { animation: rc-contagia .35s ease-out; }
+@keyframes rc-contagia { from { transform: rotateY(90deg) scale(.8); } }
+.rf.golpe { animation: rc-golpe .3s; }
+@keyframes rc-golpe { 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+.rf.cae-piedra { animation: rc-piedra .35s cubic-bezier(.5, 0, .7, 1.4); }
+@keyframes rc-piedra { from { transform: translateY(-120%) scale(1.2); opacity: 0; } }
+
+.racimo-logo { display: grid; grid-template-columns: repeat(7, 38px); gap: 6px; justify-content: center; margin: 12px 0 14px; }
+.racimo-logo .rf { height: 38px; animation: bailar 2.4s ease-in-out infinite; }
+.racimo-logo .rf:nth-child(odd) { animation-delay: .3s; }
+.racimo-inicio .como p + p { margin-top: 8px; }
+
+.racimo { padding-bottom: calc(var(--abajo) + 14px); }
+.rc-marcador { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.rc-marcador div { background: rgba(255, 255, 255, .06); border-radius: 14px; padding: 6px; display: flex; flex-direction: column; align-items: center; }
+.rc-marcador small { color: var(--suave); font-size: .8rem; }
+.rc-marcador b { font-size: 1.5rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+#puntos { color: var(--amarillo); }
+
+.rc-tablero {
+  position: relative;
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;
+  width: 100%; max-width: 440px; aspect-ratio: 1; margin: 0 auto;
+  padding: 8px; background: #1a0f30; border-radius: 22px;
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, .5), 0 4px 0 #3d2a6b;
+}
+.rc-celda { border: 0; padding: 0; background: rgba(255, 255, 255, .06); border-radius: 26%; aspect-ratio: 1; perspective: 300px; }
+.rc-celda.vacia:active { background: rgba(255, 255, 255, .16); }
+.rc-celda .rf { font-size: min(4.6vw, 1.3rem); }
+.rc-cartel {
+  position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
+  font-family: var(--fuente); font-weight: 700; font-size: 2.4rem; color: #fff;
+  text-shadow: 0 4px 0 rgba(0, 0, 0, .35), 0 0 24px rgba(255, 201, 60, .8); opacity: 0;
+}
+.rc-cartel.ver { animation: rc-cartel 1.1s ease-out; }
+@keyframes rc-cartel { 15% { opacity: 1; transform: scale(1.15); } 70% { opacity: 1; transform: scale(1); } to { opacity: 0; transform: translateY(-30px); } }
+
+.rc-abajo { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 16px; }
+.rc-abajo > div { display: flex; flex-direction: column; align-items: center; gap: 4px; background: rgba(255, 255, 255, .06); border-radius: 18px; padding: 8px 12px; }
+.rc-abajo small { color: var(--suave); font-size: .8rem; }
+#ahora { width: 70px; height: 70px; }
+#ahora .rf { font-size: 1.8rem; animation: latir 1.6s ease-in-out infinite; }
+#despues { display: flex; gap: 6px; }
+#despues .rf { width: 40px; height: 40px; opacity: .8; }
+.rc-piedra b { font-size: 1.8rem; line-height: 70px; }
+.rc-piedra small::before { content: '🪨 '; }

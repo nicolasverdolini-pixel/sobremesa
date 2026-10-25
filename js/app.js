@@ -149,6 +149,7 @@ const App = (() => {
     { id: 'tabu', nombre: 'Tabú', bajada: 'Hacé adivinar sin decir las prohibidas', emoji: '🤐', color: 'naranja', ir: () => Tabu.inicio() },
     { id: 'mimica', nombre: 'Mímica', bajada: 'Actuá la palabra sin hablar', emoji: '🙌', color: 'violeta', ir: () => Mimica.inicio() },
     { id: 'bomba', nombre: 'La Bomba', bajada: 'Pasala antes de que explote', emoji: '💣', color: 'rojo', ir: () => Bomba.inicio() },
+    { id: 'racimo', tipo: 'solo', nombre: 'Racimo', bajada: 'Juntá 4 colores y armá cadenas', emoji: '🍇', color: 'violeta', ir: () => Racimo.inicio() },
     { id: 'sudoku', tipo: 'solo', nombre: 'Sudoku', bajada: 'Cuatro niveles, siempre distinto', emoji: '🔢', color: 'celeste', ir: () => Sudoku.inicio() },
     { id: 'cruci', tipo: 'solo', nombre: 'Crucigrama', bajada: 'Palabras cruzadas al azar', emoji: '✏️', color: 'amarillo', ir: () => Crucigrama.inicio() },
     { id: 'truco', tipo: 'ayuda', nombre: 'Anotador de Truco', bajada: 'Nosotros y Ellos, con fósforos', emoji: '🃏', color: 'verde', ir: () => Truco.inicio() },

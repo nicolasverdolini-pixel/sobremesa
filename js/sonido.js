@@ -115,6 +115,14 @@ const Sonido = (() => {
       ruido(0.4, { vol: 0.5, filtro: 1500, q: 0.5 });
       tono(90, 1.2, { tipo: 'sine', vol: 0.6, hasta: 30 });
     },
+    poner() { tono(330, 0.09, { vol: 0.16, hasta: 520 }); },
+    // Explosión de racimo: más aguda cuanto más larga la cadena.
+    racimo(cadena = 1) {
+      const k = Math.pow(1.19, cadena - 1);
+      arpegio([523 * k, 659 * k, 784 * k, 1046 * k], 0.045, { dur: 0.16, vol: 0.18 });
+      ruido(0.12, { vol: 0.12, filtro: 3000, q: 0.7 });
+    },
+    piedra() { ruido(0.2, { vol: 0.5, filtro: 260, q: 0.8, tipo: 'lowpass' }); tono(110, 0.15, { vol: 0.2, hasta: 70 }); },
     restar() { tono(330, 0.18, { vol: 0.18, hasta: 220 }); },
   };
 })();
