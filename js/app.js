@@ -149,8 +149,10 @@ const App = (() => {
     { id: 'tabu', nombre: 'Tabú', bajada: 'Hacé adivinar sin decir las prohibidas', emoji: '🤐', color: 'naranja', ir: () => Tabu.inicio() },
     { id: 'mimica', nombre: 'Mímica', bajada: 'Actuá la palabra sin hablar', emoji: '🙌', color: 'violeta', ir: () => Mimica.inicio() },
     { id: 'bomba', nombre: 'La Bomba', bajada: 'Pasala antes de que explote', emoji: '💣', color: 'rojo', ir: () => Bomba.inicio() },
+    { id: 'sudoku', tipo: 'solo', nombre: 'Sudoku', bajada: 'Cuatro niveles, siempre distinto', emoji: '🔢', color: 'celeste', ir: () => Sudoku.inicio() },
+    { id: 'cruci', tipo: 'solo', nombre: 'Crucigrama', bajada: 'Palabras cruzadas al azar', emoji: '✏️', color: 'amarillo', ir: () => Crucigrama.inicio() },
     { id: 'truco', tipo: 'ayuda', nombre: 'Anotador de Truco', bajada: 'Nosotros y Ellos, con fósforos', emoji: '🃏', color: 'verde', ir: () => Truco.inicio() },
-    { id: 'equipos', tipo: 'ayuda', nombre: 'Sorteo de equipos', bajada: 'Armá equipos al azar', emoji: '🎲', color: 'celeste', ir: () => Equipos.inicio() },
+    { id: 'equipos', tipo: 'ayuda', nombre: 'Sorteo de equipos', bajada: 'Armá equipos al azar', emoji: '🎲', color: 'rosa', ir: () => Equipos.inicio() },
   ];
   const PROXIMOS = ['Lobo', '¿Qué preferís?', 'Yo nunca nunca', 'Tutti frutti', 'Trivia', 'Chinchón', 'Generala'];
 
@@ -173,8 +175,10 @@ const App = (() => {
         <p>Juegos para la juntada</p>
       </header>
       <div class="juegos">${JUEGOS.filter(j => !j.tipo).map(tarjeta).join('')}</div>
+      <h2 class="titulito">Para jugar solo</h2>
+      <div class="juegos ayudas">${JUEGOS.filter(j => j.tipo === 'solo').map(tarjeta).join('')}</div>
       <h2 class="titulito">Para anotar y organizar</h2>
-      <div class="juegos ayudas">${JUEGOS.filter(j => j.tipo).map(tarjeta).join('')}</div>
+      <div class="juegos ayudas">${JUEGOS.filter(j => j.tipo === 'ayuda').map(tarjeta).join('')}</div>
       <h2 class="titulito">Próximamente</h2>
       <div class="proximos">${PROXIMOS.map(n => `<span>${n}</span>`).join('')}</div>
       ${esIOS && !instalada() ? `<div class="instalar">📲 <b>Instalala en tu iPhone:</b> tocá <b>Compartir</b> <span class="ico-compartir">⬆︎</span> y después <b>Agregar a inicio</b>. Así se abre a pantalla completa.</div>` : ''}

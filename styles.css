@@ -628,3 +628,123 @@ h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.01em; }
 .bomba-boom h2 { font-size: 4.5rem; text-shadow: 0 6px 0 rgba(0, 0, 0, .2); }
 .bomba-boom p { font-size: 1.4rem; font-family: var(--fuente); margin: 4px 0 0; }
 .bomba-boom .acciones { margin-top: 40px; }
+
+/* =========================================================
+   Niveles (Sudoku y Crucigrama)
+   ========================================================= */
+
+.niveles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.niveles.tres { grid-template-columns: 1fr 1fr 1fr; }
+.btn.nivel { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 16px 6px 12px; }
+.btn.nivel .emo { font-size: 2.2rem; }
+.btn.nivel b { font-size: 1.25rem; }
+.btn.nivel small { font-family: 'Nunito', sans-serif; font-size: .85rem; opacity: .9; }
+#seguir small { font-size: .95rem; opacity: .85; font-family: 'Nunito', sans-serif; }
+.cargando { justify-content: center; text-align: center; }
+
+.herr {
+  flex: 1; border: 0; background: transparent; color: var(--suave);
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-size: .82rem; font-weight: 700; padding: 4px 0; border-radius: 14px;
+}
+.herr span { font-size: 1.35rem; width: 48px; height: 40px; display: grid; place-items: center; background: var(--panel); border-radius: 14px; box-shadow: 0 3px 0 #1a0f30; }
+.herr:active span { transform: translateY(2px); box-shadow: none; }
+.herr.on span { background: var(--amarillo); box-shadow: 0 3px 0 var(--amarillo-s); }
+.herr.on { color: var(--amarillo); }
+.herr i { font-style: normal; font-size: .72rem; }
+.herr:disabled { opacity: .4; }
+
+/* =========================================================
+   Sudoku
+   ========================================================= */
+
+.sudoku { padding-bottom: calc(var(--abajo) + 12px); }
+.sd-info { display: flex; justify-content: space-between; color: var(--suave); font-size: 1rem; margin: -4px 2px 10px; font-variant-numeric: tabular-nums; }
+.sd-tablero {
+  display: grid; grid-template-columns: repeat(9, 1fr);
+  width: 100%; max-width: 440px; aspect-ratio: 1; margin: 0 auto;
+  background: #fff8ec; border-radius: 14px; overflow: hidden;
+  border: 3px solid #2a1640; box-shadow: 0 6px 0 rgba(0, 0, 0, .3);
+}
+.sd-celda {
+  border: 0; padding: 0; margin: 0; background: #fff8ec; color: #2a1640;
+  font-family: var(--fuente); font-size: min(6.4vw, 1.75rem); font-weight: 600;
+  display: grid; place-items: center; position: relative;
+  border-right: 1px solid #d9cbe8; border-bottom: 1px solid #d9cbe8;
+}
+.sd-celda:nth-child(9n) { border-right: 0; }
+.sd-celda:nth-child(9n+3), .sd-celda:nth-child(9n+6) { border-right: 2.5px solid #2a1640; }
+.sd-celda:nth-child(n+19):nth-child(-n+27), .sd-celda:nth-child(n+46):nth-child(-n+54) { border-bottom: 2.5px solid #2a1640; }
+.sd-celda.fija { font-weight: 700; color: #2a1640; }
+.sd-celda.puesta { color: var(--violeta-s); }
+.sd-celda.mal { color: var(--rojo-s); background: #ffe3e6; }
+.sd-celda.vecina { background: #efe6fb; }
+.sd-celda.igual { background: #d9c9ff; }
+.sd-celda.sel { background: var(--amarillo); }
+.sd-notas { display: grid; grid-template-columns: repeat(3, 1fr); width: 100%; height: 100%; padding: 1px; }
+.sd-notas i { font-style: normal; font-size: min(2.4vw, .62rem); color: #6f5f96; display: grid; place-items: center; font-family: 'Nunito', sans-serif; font-weight: 800; }
+.sd-herramientas { display: flex; margin: auto 0 12px; padding-top: 14px; }
+.sd-numeros { display: grid; grid-template-columns: repeat(9, 1fr); gap: 5px; }
+.sd-num {
+  border: 0; border-radius: 12px; padding: 14px 0 6px; background: var(--violeta); color: #fff;
+  font-family: var(--fuente); font-size: 1.6rem; font-weight: 700; box-shadow: 0 4px 0 var(--violeta-s);
+  display: flex; flex-direction: column; align-items: center; line-height: 1;
+}
+.sd-num small { font-size: .62rem; opacity: .75; min-height: .8em; margin-top: 2px; font-family: 'Nunito', sans-serif; }
+.sd-num:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--violeta-s); }
+.sd-num.agotado { opacity: .25; pointer-events: none; }
+
+/* =========================================================
+   Crucigrama
+   ========================================================= */
+
+.cruci { padding-bottom: calc(var(--abajo) + 8px); }
+.cr-tablero {
+  display: grid; grid-template-columns: repeat(var(--cols), 1fr); gap: 2px;
+  width: min(100%, calc(var(--cols) * 38px), calc((100dvh - var(--reserva, 440px)) * var(--cols) / var(--rows))); margin: 0 auto;
+}
+.cr-vacia { aspect-ratio: 1; }
+.cr-celda {
+  aspect-ratio: 1; border: 0; padding: 0; border-radius: 5px; position: relative;
+  background: #fff8ec; color: #2a1640; box-shadow: 0 2px 0 rgba(0, 0, 0, .3);
+  display: grid; place-items: center;
+}
+.cr-celda span { font-family: var(--fuente); font-weight: 700; font-size: min(4.8vw, 1.3rem); }
+.cr-celda small { position: absolute; top: 1px; left: 3px; font-size: min(2.2vw, .6rem); color: #6f5f96; font-weight: 800; line-height: 1; }
+.cr-celda.palabra { background: #d9c9ff; }
+.cr-celda.sel { background: var(--amarillo); }
+.cr-celda.bien span { color: var(--verde-s); }
+.cr-celda.fija span { color: var(--violeta-s); }
+.cr-celda.mala { background: #ffc2c9; }
+.cr-celda.mala span { color: var(--rojo-s); }
+.cr-pista {
+  display: flex; align-items: center; gap: 6px; margin: 12px 0 8px;
+  background: var(--panel); border-radius: 16px; padding: 6px; min-height: 64px;
+}
+.cr-pista #pista { flex: 1; font-size: 1.02rem; line-height: 1.25; text-align: center; }
+.cr-pista #pista b { color: var(--amarillo); margin-right: 4px; }
+.cr-pista #pista small { color: var(--suave); }
+.cr-flecha { border: 0; background: rgba(255, 255, 255, .08); border-radius: 12px; width: 38px; height: 50px; font-size: 1.8rem; font-family: var(--fuente); flex: none; }
+.cr-herramientas { display: flex; margin-bottom: 8px; }
+.teclado { margin-top: auto; display: flex; flex-direction: column; gap: 7px; }
+.fila-t { display: flex; gap: 4px; justify-content: center; }
+.fila-t button {
+  flex: 1; max-width: 42px; height: 48px; border: 0; border-radius: 9px; padding: 0;
+  background: #fff8ec; color: #2a1640; font-family: var(--fuente); font-size: 1.25rem; font-weight: 600;
+  box-shadow: 0 3px 0 #9d8bc4;
+}
+.fila-t button:active { transform: translateY(2px); box-shadow: none; background: var(--amarillo); }
+.fila-t .borrar { flex: 1.6; max-width: 64px; background: var(--gris); color: #fff; box-shadow: 0 3px 0 var(--gris-s); }
+.cr-lista { max-height: 80vh; overflow-y: auto; text-align: left; gap: 8px; }
+.cr-lista h2 { font-size: 1.2rem; color: var(--amarillo); margin-top: 6px; }
+.cr-item { display: flex; gap: 10px; align-items: baseline; text-align: left; border: 0; background: rgba(255, 255, 255, .06); border-radius: 12px; padding: 9px 12px; font-size: 1rem; }
+.cr-item b { color: var(--amarillo); min-width: 20px; }
+.cr-item.hecha { opacity: .45; text-decoration: line-through; }
+
+@media (max-height: 700px) {
+  .cruci { --reserva: 380px; }
+  .fila-t button { height: 40px; }
+  .teclado { gap: 5px; }
+  .cr-pista { min-height: 52px; margin: 8px 0 6px; }
+  .cr-herramientas .herr span { height: 34px; }
+}

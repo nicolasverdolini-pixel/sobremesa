@@ -7,6 +7,8 @@ Juegos para jugar con amigos y familia en la juntada. Se instala en el celu como
 - **Tabú** — por equipos: hacé adivinar sin decir las palabras prohibidas.
 - **Mímica** — por equipos: actuá la palabra sin hablar.
 - **La Bomba** — pasá el celu diciendo cosas de la consigna antes de que explote.
+- **Sudoku** — para jugar solo: cuatro niveles, cada tablero se genera al azar con solución única.
+- **Crucigrama** — para jugar solo: tres niveles, la grilla se arma al azar con el banco de `js/crucigrama-palabras.js`.
 - **Anotador de Truco** — Nosotros / Ellos, a 15 o a 30, con palitos de fósforo.
 - **Sorteo de equipos** — cargá los nombres y armá 2 a 4 equipos al azar.
 
