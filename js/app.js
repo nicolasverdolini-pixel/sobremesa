@@ -151,6 +151,7 @@ const App = (() => {
     { id: 'bomba', nombre: 'La Bomba', bajada: 'Pasala antes de que explote', emoji: '💣', color: 'rojo', ir: () => Bomba.inicio() },
     { id: 'ajedrez', tipo: 'tablero', nombre: 'Ajedrez', bajada: 'Contra la compu o de a dos', emoji: '♞', color: 'naranja', ir: () => Ajedrez.inicio() },
     { id: 'damas', tipo: 'tablero', nombre: 'Damas', bajada: 'Contra la compu o de a dos', emoji: '⚪', color: 'rojo', ir: () => Damas.inicio() },
+    { id: 'granizada', tipo: 'solo', nombre: 'Granizada', bajada: 'Atajá los choris, esquivá el granizo', emoji: '⛈️', color: 'naranja', ir: () => Granizada.inicio() },
     { id: 'racimo', tipo: 'solo', nombre: 'Racimo', bajada: 'Juntá 4 colores y armá cadenas', emoji: '🍇', color: 'violeta', ir: () => Racimo.inicio() },
     { id: 'sudoku', tipo: 'solo', nombre: 'Sudoku', bajada: 'Cuatro niveles, siempre distinto', emoji: '🔢', color: 'celeste', ir: () => Sudoku.inicio() },
     { id: 'cruci', tipo: 'solo', nombre: 'Crucigrama', bajada: 'Palabras cruzadas al azar', emoji: '✏️', color: 'amarillo', ir: () => Crucigrama.inicio() },

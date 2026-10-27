@@ -898,3 +898,34 @@ h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.01em; }
 .ficha.b { background: radial-gradient(circle at 35% 30%, #6b4f8f, #3a2460 60%, #24123f); box-shadow: inset 0 -4px 0 #1a0c2e, 0 3px 4px rgba(0, 0, 0, .45); color: var(--amarillo); }
 .ficha.dama { box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .25), 0 0 0 2px var(--amarillo), 0 3px 4px rgba(0, 0, 0, .45); }
 .ficha.chica { width: 18px; height: 18px; box-shadow: 0 1px 0 rgba(0, 0, 0, .4); }
+
+/* =========================================================
+   Granizada
+   ========================================================= */
+
+.gr-portada { width: 100%; border-radius: 22px; box-shadow: 0 6px 0 rgba(0, 0, 0, .3); margin-bottom: 8px; }
+.gr-inicio .como p + p { margin-top: 8px; }
+.gr-inicio .segmentos button { padding: 8px 10px; }
+
+.gr-juego { padding: 0; max-width: none; position: relative; overflow: hidden; height: 100vh; height: 100dvh; }
+.gr-juego canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; display: block; }
+.gr-hud {
+  position: absolute; left: 0; right: 0; top: 0; z-index: 2;
+  padding: calc(var(--arriba) + 10px) 14px 0;
+  display: flex; align-items: center; justify-content: space-between; pointer-events: none;
+}
+.gr-hud .btn-redondo { pointer-events: auto; background: rgba(42, 22, 64, .55); box-shadow: none; }
+.gr-puntos { display: flex; align-items: baseline; gap: 6px; text-shadow: 0 3px 0 rgba(0, 0, 0, .3); }
+.gr-puntos b { font-size: 2.2rem; color: #fff; }
+.gr-puntos span { font-family: var(--fuente); font-weight: 700; font-size: 1.4rem; color: var(--amarillo); }
+.gr-vidas { font-size: 1.3rem; letter-spacing: 1px; }
+.gr-poder {
+  position: absolute; top: calc(var(--arriba) + 66px); left: 50%; transform: translateX(-50%); z-index: 2;
+  font-family: var(--fuente); font-weight: 700; font-size: 1.3rem; color: #fff; text-shadow: 0 2px 0 rgba(0, 0, 0, .3);
+}
+.gr-ayuda {
+  position: absolute; left: 50%; bottom: calc(var(--abajo) + 26px); transform: translateX(-50%); z-index: 2;
+  background: rgba(42, 22, 64, .75); padding: 10px 16px; border-radius: 16px; white-space: nowrap;
+  font-size: 1rem; pointer-events: none; transition: opacity .5s;
+}
+.gr-ayuda.chau { opacity: 0; }

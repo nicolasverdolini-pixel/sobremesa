@@ -9,6 +9,7 @@ Juegos para jugar con amigos y familia en la juntada. Se instala en el celu como
 - **La Bomba** — pasá el celu diciendo cosas de la consigna antes de que explote.
 - **Ajedrez** — contra la compu (3 niveles) o de a dos en el mismo celu. Reglas completas, verificadas con perft (`js/ajedrez-motor.js`).
 - **Damas** — contra la compu (3 niveles) o de a dos, con reglas configurables (`js/damas-motor.js`).
+- **Granizada** — para jugar solo: atajá con la parrilla los choripanes que caen del cielo y esquivá el granizo y los rayos. Todo dibujado en `js/granizada.js`.
 - **Racimo** — para jugar solo: juego de bloques propio. Juntá 4 del mismo color, explotan y contagian a las vecinas. Reglas en `js/racimo-reglas.js`.
 - **Sudoku** — para jugar solo: cuatro niveles, cada tablero se genera al azar con solución única.
 - **Crucigrama** — para jugar solo: tres niveles, la grilla se arma al azar con el banco de `js/crucigrama-palabras.js`.
