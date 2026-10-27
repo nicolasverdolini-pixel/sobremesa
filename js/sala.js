@@ -3,7 +3,8 @@
 // El celu del anfitrión lleva el juego: decide, guarda lo secreto y publica el estado.
 // Cada juego en red es un objeto:
 //   { id, nombre, emoji, minimo, opciones?(ctx) -> html, leerOpciones?(el),
-//     empezar(ctx, op), accion(ctx, de, a), presencia?(ctx), vista(ctx) -> html, enlazar(el, ctx) }
+//     empezar(ctx, op), accion(ctx, de, a), presencia?(ctx), vista(ctx) -> html, enlazar(el, ctx),
+//     mantener?(el, ctx) -> true si actualizó la pantalla sin redibujarla }
 
 const JUEGOS_RED = {};
 
@@ -33,7 +34,7 @@ const Sala = (() => {
       guardarMemoria();
     },
     secreto(id, datos) { memoria.privados = memoria.privados || {}; memoria.privados[id] = datos; conn.para(id, { tipo: 'privado', datos }); },
-    accion(a) { conn.anfitrion({ tipo: 'accion', a }); },
+    accion(a) { if (conn) conn.anfitrion({ tipo: 'accion', a }); },
     redibujar: () => dibujar(),
   };
 
@@ -135,6 +136,8 @@ const Sala = (() => {
     const cuerpo = pantalla.querySelector('#sala-cuerpo');
     const juego = estado && estado.juego && JUEGOS_RED[estado.juego];
     if (juego) {
+      // Si el juego puede actualizar en el lugar (por ejemplo, un formulario a medio escribir), no se redibuja.
+      if (juego.mantener && juego.mantener(cuerpo, ctx)) return;
       cuerpo.innerHTML = juego.vista(ctx);
       juego.enlazar(cuerpo, ctx);
       return;
@@ -163,7 +166,7 @@ const Sala = (() => {
               <span class="txt"><b>${g.nombre}</b><small>${jugadores.length < g.minimo ? `Hacen falta ${g.minimo} o más` : g.bajada}</small></span>
             </button>`).join('')}
         </div>
-        <p class="nota">Próximamente en red: Tutti frutti, Lobo, Trivia y tablero a distancia.</p>`
+        <p class="nota">Próximamente en red: Lobo, Trivia y tablero a distancia.</p>`
       : `<div class="red-espera"><div class="puntitos"><i></i><i></i><i></i></div><p>Esperando que ${App.esc(nombreDe(anfitrion))} elija un juego…</p></div>`}`;
     cuerpo.querySelector('#compartir').onclick = async () => {
       const texto = `¡Sumate a mi sala de Sobremesa! Código: ${cod}`;
@@ -188,13 +191,21 @@ const Sala = (() => {
     d.innerHTML = `<div class="modal-caja red-opciones"><h2>${g.emoji} ${g.nombre}</h2>${g.opciones(ctx)}
       <div class="fila"><button class="btn gris" data-r="no">Volver</button><button class="btn verde" data-r="si">¡Empezar!</button></div></div>`;
     document.body.appendChild(d);
+    // Chips de una sola opción, o de varias si el grupo tiene data-multi; los segmentos, de una.
     d.querySelectorAll('.chips').forEach(ch => ch.querySelectorAll('.chip').forEach(c => {
-      c.onclick = () => ch.querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x === c));
+      c.onclick = () => {
+        if (ch.hasAttribute('data-multi')) c.classList.toggle('on');
+        else ch.querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x === c));
+      };
+    }));
+    d.querySelectorAll('.segmentos').forEach(g => g.querySelectorAll('button').forEach(b => {
+      b.onclick = () => g.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
     }));
     d.addEventListener('click', e => {
       const b = e.target.closest('[data-r]');
       if (!b) return;
       const op = b.dataset.r === 'si' ? g.leerOpciones(d) : null;
+      if (b.dataset.r === 'si' && !op) return; // opciones inválidas: el juego ya avisó
       d.remove();
       if (op) { memoria = {}; g.empezar(ctx, op); guardarMemoria(); }
     });
