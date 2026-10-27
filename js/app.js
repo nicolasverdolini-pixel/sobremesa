@@ -179,6 +179,10 @@ const App = (() => {
         <p>Juegos para la juntada</p>
       </header>
       <div class="juegos">${JUEGOS.filter(j => !j.tipo).map(tarjeta).join('')}</div>
+      <h2 class="titulito">Con varios celus</h2>
+      <div class="juegos ayudas"><button class="tarjeta-juego celeste" data-red>
+        <span class="emo">📡</span><span class="txt"><b>Jugar en red</b><small>Cada uno desde su celu: creá una sala o entrá con un código</small></span>
+      </button></div>
       <h2 class="titulito">Juegos de tablero</h2>
       <div class="juegos ayudas">${JUEGOS.filter(j => j.tipo === 'tablero').map(tarjeta).join('')}</div>
       <h2 class="titulito">Para jugar solo</h2>
@@ -192,6 +196,7 @@ const App = (() => {
     p.querySelectorAll('[data-juego]').forEach(b => {
       b.onclick = () => { Sonido.desbloquear(); JUEGOS.find(j => j.id === b.dataset.juego).ir(); };
     });
+    p.querySelector('[data-red]').onclick = () => { Sonido.desbloquear(); Sala.inicio(); };
     const bs = p.querySelector('[data-sonido-hub]');
     bs.onclick = () => { Sonido.alternar(); bs.textContent = iconoSonido(); };
   }

@@ -929,3 +929,50 @@ h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.01em; }
   font-size: 1rem; pointer-events: none; transition: opacity .5s;
 }
 .gr-ayuda.chau { opacity: 0; }
+
+/* =========================================================
+   Jugar en red
+   ========================================================= */
+
+.red-campo { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; font-family: var(--fuente); font-size: 1.05rem; }
+.red-campo input, .red-unirse input {
+  border: 3px solid transparent; outline: none; background: var(--panel); border-radius: 18px;
+  padding: 14px 16px; font-size: 1.25rem; font-weight: 700;
+}
+.red-campo input:focus, .red-unirse input:focus { border-color: var(--celeste); }
+.falta { border-color: var(--rojo) !important; animation: rc-golpe .3s; }
+.red-o { text-align: center; color: var(--suave); margin: 14px 0; font-family: var(--fuente); }
+.red-unirse { display: flex; gap: 10px; }
+.red-unirse input { flex: 1; min-width: 0; text-align: center; letter-spacing: .3em; font-family: var(--fuente); font-size: 1.6rem; text-transform: uppercase; }
+.red-unirse .btn { flex: none; }
+.red-inicio .como { margin-top: 22px; }
+#volver-sala { margin-bottom: 16px; }
+.red-sala .cara { text-align: center; }
+
+.red-estado { text-align: center; font-size: .9rem; margin: -6px 0 10px; color: var(--suave); }
+.red-estado.mal { color: var(--naranja); }
+.red-codigo { background: rgba(255, 255, 255, .06); border-radius: 24px; padding: 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.red-codigo small { color: var(--suave); }
+.red-codigo .letras { display: flex; gap: 8px; }
+.red-codigo .letras span {
+  width: 58px; height: 68px; display: grid; place-items: center; border-radius: 16px;
+  background: var(--amarillo); color: #4a2c00; font-family: var(--fuente); font-size: 2.4rem; font-weight: 700;
+  box-shadow: 0 5px 0 var(--amarillo-s);
+}
+.red-jugadores { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.red-jugadores span { background: var(--panel); border-radius: 999px; padding: 8px 14px; font-family: var(--fuente); font-size: 1.05rem; box-shadow: 0 3px 0 #1a0f30; animation: saltar .35s cubic-bezier(.2, 1.6, .4, 1); }
+.red-jugadores span.yo { background: var(--violeta); box-shadow: 0 3px 0 var(--violeta-s); }
+.red-juegos { display: flex; flex-direction: column; gap: 14px; }
+.red-juegos .tarjeta-juego { flex-direction: row; text-align: left; }
+.red-espera { text-align: center; margin-top: 30px; color: var(--suave); font-size: 1.1rem; }
+.red-espera .puntitos { margin-bottom: 16px; }
+.red-aviso { text-align: center; background: rgba(255, 255, 255, .07); border-radius: 16px; padding: 12px; margin: 18px 0 8px; }
+.red-sala .carta { margin-top: 6px; }
+.red-sala .btn.grande { margin-top: 20px; width: 100%; }
+.red-sala .nota { text-align: center; margin-top: 12px; }
+.red-sala .centro { text-align: center; }
+.red-sala .globo { text-align: center; }
+.red-votos { list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-direction: column; gap: 6px; text-align: left; }
+.red-votos li { background: rgba(255, 255, 255, .06); border-radius: 12px; padding: 8px 12px; }
+.red-opciones { text-align: left; }
+.red-opciones h2 { text-align: center; }

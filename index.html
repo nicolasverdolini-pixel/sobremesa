@@ -43,6 +43,17 @@
   <script src="js/ajedrez.js"></script>
   <script src="js/damas-motor.js"></script>
   <script src="js/damas.js"></script>
-  <script>App.menu();</script>
+  <script src="js/red.js"></script>
+  <script src="js/sala.js"></script>
+  <script src="js/impostor-red.js"></script>
+  <script>
+    App.menu();
+    // Link de invitación: ...?sala=ABCD abre directo la pantalla para entrar a esa sala.
+    const sala = new URLSearchParams(location.search).get('sala');
+    if (sala && Red.codigoValido(sala.toUpperCase())) {
+      history.replaceState(null, '', location.pathname);
+      Sala.inicio(sala.toUpperCase());
+    }
+  </script>
 </body>
 </html>

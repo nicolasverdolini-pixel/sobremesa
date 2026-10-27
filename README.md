@@ -17,3 +17,11 @@ Juegos para jugar con amigos y familia en la juntada. Se instala en el celu como
 - **Sorteo de equipos** — cargá los nombres y armá 2 a 4 equipos al azar.
 
 Hecho con HTML, CSS y JavaScript, sin dependencias. Las palabras están en `js/palabras.js` y las cartas de Tabú y consignas de La Bomba en `js/cartas.js`.
+
+## Jugar con varios celus
+
+En **Jugar en red** uno crea una sala (código de 4 letras) y los demás entran desde su celu, con el código o con el link de invitación.
+El celu del anfitrión lleva el juego; el servidor (`servidor/`, un Cloudflare Worker con Durable Objects en la cuenta raizapp.oficial) solo reparte los mensajes.
+Para publicar cambios del servidor: `cd servidor && npx wrangler deploy`.
+
+Juegos en red: **El Impostor** (`js/impostor-red.js`). Para sumar otro, se agrega a `JUEGOS_RED` (ver `js/sala.js`).
