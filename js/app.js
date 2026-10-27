@@ -149,6 +149,8 @@ const App = (() => {
     { id: 'tabu', nombre: 'Tabú', bajada: 'Hacé adivinar sin decir las prohibidas', emoji: '🤐', color: 'naranja', ir: () => Tabu.inicio() },
     { id: 'mimica', nombre: 'Mímica', bajada: 'Actuá la palabra sin hablar', emoji: '🙌', color: 'violeta', ir: () => Mimica.inicio() },
     { id: 'bomba', nombre: 'La Bomba', bajada: 'Pasala antes de que explote', emoji: '💣', color: 'rojo', ir: () => Bomba.inicio() },
+    { id: 'ajedrez', tipo: 'tablero', nombre: 'Ajedrez', bajada: 'Contra la compu o de a dos', emoji: '♞', color: 'naranja', ir: () => Ajedrez.inicio() },
+    { id: 'damas', tipo: 'tablero', nombre: 'Damas', bajada: 'Contra la compu o de a dos', emoji: '⚪', color: 'rojo', ir: () => Damas.inicio() },
     { id: 'racimo', tipo: 'solo', nombre: 'Racimo', bajada: 'Juntá 4 colores y armá cadenas', emoji: '🍇', color: 'violeta', ir: () => Racimo.inicio() },
     { id: 'sudoku', tipo: 'solo', nombre: 'Sudoku', bajada: 'Cuatro niveles, siempre distinto', emoji: '🔢', color: 'celeste', ir: () => Sudoku.inicio() },
     { id: 'cruci', tipo: 'solo', nombre: 'Crucigrama', bajada: 'Palabras cruzadas al azar', emoji: '✏️', color: 'amarillo', ir: () => Crucigrama.inicio() },
@@ -176,6 +178,8 @@ const App = (() => {
         <p>Juegos para la juntada</p>
       </header>
       <div class="juegos">${JUEGOS.filter(j => !j.tipo).map(tarjeta).join('')}</div>
+      <h2 class="titulito">Juegos de tablero</h2>
+      <div class="juegos ayudas">${JUEGOS.filter(j => j.tipo === 'tablero').map(tarjeta).join('')}</div>
       <h2 class="titulito">Para jugar solo</h2>
       <div class="juegos ayudas">${JUEGOS.filter(j => j.tipo === 'solo').map(tarjeta).join('')}</div>
       <h2 class="titulito">Para anotar y organizar</h2>

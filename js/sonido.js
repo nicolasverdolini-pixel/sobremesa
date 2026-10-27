@@ -123,6 +123,11 @@ const Sonido = (() => {
       ruido(0.12, { vol: 0.12, filtro: 3000, q: 0.7 });
     },
     piedra() { ruido(0.2, { vol: 0.5, filtro: 260, q: 0.8, tipo: 'lowpass' }); tono(110, 0.15, { vol: 0.2, hasta: 70 }); },
+    // Pieza de madera apoyada en el tablero (más fuerte si come).
+    clac(fuerte = false) {
+      ruido(0.05, { vol: fuerte ? 0.55 : 0.32, filtro: fuerte ? 1400 : 2200, q: 2 });
+      tono(fuerte ? 170 : 240, 0.08, { vol: fuerte ? 0.22 : 0.14 });
+    },
     restar() { tono(330, 0.18, { vol: 0.18, hasta: 220 }); },
   };
 })();
