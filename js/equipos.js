@@ -90,5 +90,5 @@ const Equipos = (() => {
     pintar();
   }
 
-  return { elegir, inicio: () => elegir() };
+  return { elegir, inicio: () => elegir(), COLORES };
 })();

@@ -32,6 +32,7 @@ const Sala = (() => {
       conn.guardar(nuevo);
       conn.todos({ tipo: 'estado', estado: nuevo });
       guardarMemoria();
+      redibujarPronto();
     },
     secreto(id, datos) { memoria.privados = memoria.privados || {}; memoria.privados[id] = datos; conn.para(id, { tipo: 'privado', datos }); },
     accion(a) { if (conn) conn.anfitrion({ tipo: 'accion', a }); },
@@ -105,6 +106,8 @@ const Sala = (() => {
       },
       mensaje(de, d) {
         if (!d) return;
+        // El anfitrión ya tiene su estado al día: su propio eco llega tarde y lo haría retroceder.
+        if (d.tipo === 'estado' && de === yo) return;
         if (d.tipo === 'estado' && de === anfitrion) { estado = d.estado; if (!estado || !estado.juego) privado = null; dibujar(); }
         else if (d.tipo === 'privado' && de === anfitrion) { privado = d.datos; dibujar(); }
         else if (d.tipo === 'accion' && esAnfitrion() && estado && JUEGOS_RED[estado.juego]) {
@@ -120,6 +123,13 @@ const Sala = (() => {
   function salir(alMenu) {
     if (conn) { conn.cerrar(); conn = null; }
     if (alMenu) App.menu();
+  }
+
+  let pendienteDibujo = false;
+  function redibujarPronto() {
+    if (pendienteDibujo) return;
+    pendienteDibujo = true;
+    setTimeout(() => { pendienteDibujo = false; dibujar(); }, 0);
   }
 
   function pintarEstado() {

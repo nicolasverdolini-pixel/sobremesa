@@ -159,5 +159,6 @@ const Truco = (() => {
     App.alSalir(() => App.despierto(false));
   }
 
-  return { inicio };
+  // `fosforos` también lo usa el anotador en red.
+  return { inicio, fosforos };
 })();

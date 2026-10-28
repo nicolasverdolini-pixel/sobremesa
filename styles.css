@@ -1036,3 +1036,29 @@ h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.01em; }
 
 .tt-prop-botones { margin-top: 18px; opacity: .9; }
 .tt-prop-botones .herr { font-size: .78rem; }
+
+/* Más juegos en red */
+.truco-red { flex: none; }
+.truco-red .palitos { height: min(28vh, 230px); }
+.tr-puntos { width: 64px; height: 64px; font-size: 2.2rem; }
+.tr-carta { padding: 8px 0; }
+.tr-carta .tarjeta { animation: saltar .3s cubic-bezier(.2, 1.6, .4, 1); }
+.red-sala .p-botones { margin-top: 12px; }
+.tr-tabu { margin-top: 14px; font-size: 2rem; padding: 24px; }
+.tr-ultimas { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 16px; }
+.tr-ultimas span { background: rgba(255, 255, 255, .08); border-radius: 999px; padding: 4px 10px; font-size: .9rem; }
+.tr-ultimas .ok { color: var(--verde); }
+.tr-ultimas .tabu { color: var(--rojo); }
+.tr-miembros { display: block; font-family: 'Nunito', sans-serif; font-size: .8rem; opacity: .85; font-weight: 700; }
+.qs-palabra-red { text-align: center; background: var(--amarillo); color: #4a2c00; border-radius: 26px; padding: 20px 14px; margin: 8px 0 4px; box-shadow: 0 7px 0 var(--amarillo-s); display: flex; flex-direction: column; gap: 4px; animation: saltar .3s cubic-bezier(.2, 1.6, .4, 1); }
+.qs-palabra-red b { font-family: var(--fuente); font-size: clamp(2rem, 11vw, 3.2rem); line-height: 1.05; overflow-wrap: anywhere; }
+.bomba-red { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 0; border-radius: 26px; }
+.bomba-red.la-tengo { background: radial-gradient(circle, rgba(255, 77, 94, .35), transparent 70%); }
+.bomba-red small { color: var(--suave); }
+.bomba-red .consigna { font-family: var(--fuente); font-size: clamp(1.8rem, 9vw, 2.6rem); line-height: 1.1; }
+.bomba-red .bomba-emo { font-size: 7rem; margin: 6px 0; }
+.bomba-red.la-tengo .bomba-emo { font-size: 9rem; filter: drop-shadow(0 10px 20px rgba(255, 77, 94, .6)); }
+.bomba-red #pasar { width: 100%; font-size: 1.9rem; padding: 26px; }
+.bomba-boom-red { text-align: center; background: radial-gradient(circle, #ffc93c, #ff8a3d 45%, #ff4d5e 85%); border-radius: 28px; padding: 18px; margin-bottom: 8px; }
+.bomba-boom-red h2 { font-size: 3.4rem; }
+.bomba-boom-red p { margin: 0; font-size: 1.2rem; }
