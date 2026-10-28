@@ -168,7 +168,7 @@ const Solitario = (() => {
           return html;
         }).join('') || '<span class="vacio">K</span>';
       });
-      p.querySelector('#movs').textContent = `${st.movs} movimientos`;
+      p.querySelector('#movs').textContent = `${st.movs} ${st.movs === 1 ? 'movimiento' : 'movimientos'}`;
       p.querySelector('#reloj').textContent = `⏱ ${fmt(st.tiempo)}`;
       p.querySelector('#deshacer').disabled = !st.hist.length;
       p.querySelector('#auto').disabled = !(todoALaVista() && !gano());
