@@ -32,7 +32,7 @@ const Ajedrez = (() => {
     });
   });
 
-  return JuegoDeTablero({
+  const cfg = {
     id: 'ajedrez', titulo: 'Ajedrez', emoji: '♞',
     nombres: { w: 'Blancas', b: 'Negras' },
     como: 'Tocá una pieza tuya para ver adónde puede ir y después tocá la casilla. Están todas las reglas: enroque, captura al paso, coronación, jaque mate y tablas.',
@@ -58,5 +58,7 @@ const Ajedrez = (() => {
       }
       return res;
     },
-  });
+  };
+  // `cfg` también lo usa el modo en red (js/tablero-red.js).
+  return { ...JuegoDeTablero(cfg), cfg };
 })();

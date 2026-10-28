@@ -24,4 +24,4 @@ En **Jugar en red** uno crea una sala (código de 4 letras) y los demás entran 
 El celu del anfitrión lleva el juego; el servidor (`servidor/`, un Cloudflare Worker con Durable Objects en la cuenta raizapp.oficial) solo reparte los mensajes.
 Para publicar cambios del servidor: `cd servidor && npx wrangler deploy`.
 
-Juegos en red: **El Impostor** (`js/impostor-red.js`) y **Tutti frutti** (`js/tutti-red.js`). Para sumar otro, se agrega a `JUEGOS_RED` (ver `js/sala.js`).
+Juegos en red: **El Impostor** (`js/impostor-red.js`) , **Tutti frutti** (`js/tutti-red.js`) y **Ajedrez o Damas** a distancia (`js/tablero-red.js`). Para sumar otro, se agrega a `JUEGOS_RED` (ver `js/sala.js`).

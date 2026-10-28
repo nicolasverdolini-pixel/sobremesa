@@ -166,7 +166,7 @@ const Sala = (() => {
               <span class="txt"><b>${g.nombre}</b><small>${jugadores.length < g.minimo ? `Hacen falta ${g.minimo} o más` : g.bajada}</small></span>
             </button>`).join('')}
         </div>
-        <p class="nota">Próximamente en red: Lobo, Trivia y tablero a distancia.</p>`
+        <p class="nota">Próximamente en red: Lobo y Trivia.</p>`
       : `<div class="red-espera"><div class="puntitos"><i></i><i></i><i></i></div><p>Esperando que ${App.esc(nombreDe(anfitrion))} elija un juego…</p></div>`}`;
     cuerpo.querySelector('#compartir').onclick = async () => {
       const texto = `¡Sumate a mi sala de Sobremesa! Código: ${cod}`;

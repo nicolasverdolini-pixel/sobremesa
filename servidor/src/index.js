@@ -52,8 +52,13 @@ export class Sala extends DurableObject {
     servidor.serializeAttachment({ id, nombre, entro: Date.now() });
 
     let anfitrion = await this.ctx.storage.get('anfitrion');
+    const creador = await this.ctx.storage.get('creador');
     const presentes = this.conectados();
-    if (!anfitrion || !presentes.some(j => j.id === anfitrion)) {
+    if (!creador) await this.ctx.storage.put('creador', id);
+    if (creador === id && anfitrion !== id) {
+      // El que creó la sala recupera el mando cuando vuelve.
+      anfitrion = id; await this.ctx.storage.put('anfitrion', id);
+    } else if (!anfitrion || !presentes.some(j => j.id === anfitrion)) {
       // Sin anfitrión conectado: si la sala estaba vacía, el que entra pasa a ser el anfitrión.
       if (presentes.length === 1 || !anfitrion) { anfitrion = id; await this.ctx.storage.put('anfitrion', id); }
     }

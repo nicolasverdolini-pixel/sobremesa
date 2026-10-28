@@ -17,7 +17,7 @@ const Damas = (() => {
     ['atras', 'Las fichas comen para atrás'],
   ];
 
-  return JuegoDeTablero({
+  const cfg = {
     id: 'damas', titulo: 'Damas', emoji: '⚪⚫',
     nombres: { w: 'Blancas', b: 'Negras' },
     como: 'Las fichas avanzan en diagonal de a una casilla. Para comer, saltás por encima de una ficha rival a la casilla libre de atrás, y si podés seguir comiendo, seguís en la misma jugada. Al llegar al fondo, la ficha se corona dama ♛. Gana el que deja al otro sin jugadas.',
@@ -51,5 +51,7 @@ const Damas = (() => {
         </label>`).join(''),
       leer: p => Object.fromEntries(REGLAS.map(([k]) => [k, p.querySelector(`[data-regla="${k}"]`).checked])),
     },
-  });
+  };
+  // `cfg` también lo usa el modo en red (js/tablero-red.js).
+  return { ...JuegoDeTablero(cfg), cfg };
 })();

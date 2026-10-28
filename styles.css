@@ -1019,3 +1019,17 @@ h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.01em; }
 .tt-sub { display: flex; flex-wrap: wrap; gap: 8px 14px; justify-content: center; margin: 6px 0 4px; }
 .tt-ganador { color: var(--amarillo); font-size: 2rem; }
 .red-sala .copa { text-align: center; }
+
+/* Tablero en red */
+.tb-titulo-red { text-align: center; margin: -4px 0 4px; color: var(--suave); font-family: var(--fuente); }
+.tb-tablero.tb-red { max-width: min(460px, calc(100dvh - 380px)); }
+.tb-fuera { color: var(--naranja); font-size: .8rem; }
+.tb-fin { text-align: center; background: rgba(255, 201, 60, .14); border: 3px solid var(--amarillo); border-radius: 18px; padding: 10px; margin: 10px 0; display: flex; flex-direction: column; gap: 2px; animation: saltar .4s cubic-bezier(.2, 1.6, .4, 1); }
+.tb-fin b { font-family: var(--fuente); font-size: 1.5rem; }
+.tb-fin span { color: var(--suave); }
+.tb-pide { background: rgba(60, 196, 255, .14); border: 3px solid var(--celeste); border-radius: 18px; padding: 10px; margin: 10px 0; display: flex; flex-direction: column; gap: 8px; text-align: center; }
+.tb-pide .fila { display: flex; gap: 10px; }
+.tb-pide .btn { flex: 1; }
+.tr-reglas { margin-top: 12px; background: rgba(255, 255, 255, .06); border-radius: 14px; padding: 8px 12px; }
+.tr-reglas summary { cursor: pointer; font-family: var(--fuente); }
+.red-opciones { max-height: 88vh; overflow-y: auto; }
