@@ -1,5 +1,5 @@
 // Guarda la app para que abra rápido y funcione sin conexión.
-const CACHE = 'sobremesa-v10';
+const CACHE = 'sobremesa-v11';
 const ARCHIVOS = ['./', 'index.html', 'styles.css', 'js/sonido.js', 'js/palabras.js', 'js/app.js', 'js/quiensoy.js', 'js/impostor.js', 'js/truco.js', 'js/cartas.js', 'js/equipos.js', 'js/partida.js', 'js/tabu.js', 'js/bomba.js', 'js/sudoku.js', 'js/crucigrama-palabras.js', 'js/crucigrama.js', 'js/racimo-reglas.js', 'js/racimo.js', 'js/granizada.js', 'js/tablero.js', 'js/ajedrez-motor.js', 'js/ajedrez.js', 'js/damas-motor.js', 'js/damas.js', 'js/red.js', 'js/sala.js', 'js/impostor-red.js', 'js/tutti-red.js', 'js/tablero-red.js', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-180.png'];
 
 self.addEventListener('install', e => {

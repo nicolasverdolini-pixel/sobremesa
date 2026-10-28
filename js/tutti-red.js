@@ -15,25 +15,46 @@ JUEGOS_RED.tutti = (() => {
     .replace(/\u0001/g, 'ñ').replace(/\s+/g, ' ').trim();
   const empiezaCon = (s, letra) => normal(s).startsWith(normal(letra));
 
-  let reloj = null, finLocal = 0, faseVista = '', esperaHost = null;
+  let reloj = null, finLocal = 0, faseVista = '', esperaHost = null, avisoTiempo = 0;
 
   const presentes = ctx => ctx.estado.ronda.filter(id => ctx.jugadores.some(j => j.id === id));
-  const borradorClave = ctx => `tutti:borrador:${ctx.estado.ronda.join('')}:${ctx.estado.numero}`;
+  // Cada ronda tiene su propio borrador (partida + número + letra): siempre arranca con los casilleros vacíos.
+  const borradorClave = ctx => `tutti:borrador:${ctx.estado.partida}:${ctx.estado.numero}:${ctx.estado.letra}`;
+  let partidaVista = '';
+  function limpiarBorradores(partida) {
+    if (partida === partidaVista) return;
+    partidaVista = partida;
+    try {
+      Object.keys(localStorage).filter(k => k.startsWith('sobremesa:tutti:borrador:') && !k.includes(`:${partida}:`)).forEach(k => localStorage.removeItem(k));
+    } catch (err) {}
+  }
 
   // ---------- Anfitrión ----------
   function empezar(ctx, op) {
     const ronda = ctx.jugadores.map(j => j.id);
     const nombres = Object.fromEntries(ctx.jugadores.map(j => [j.id, j.nombre]));
     Object.assign(ctx.memoria, { op });
-    nuevaRonda(ctx, { juego: 'tutti', ronda, nombres, cats: op.cats, rondas: op.rondas, seg: op.seg, numero: 0, usadas: [], totales: Object.fromEntries(ronda.map(id => [id, 0])) });
+    nuevaRonda(ctx, { juego: 'tutti', partida: Date.now().toString(36), ronda, nombres, cats: op.cats, rondas: op.rondas, seg: op.seg, numero: 0, usadas: [], totales: Object.fromEntries(ronda.map(id => [id, 0])) });
   }
 
-  function nuevaRonda(ctx, base) {
-    const pool = [...(ctx.memoria.op.dificiles ? FACILES + DIFICILES : FACILES)].filter(l => !base.usadas.includes(l));
-    const letra = pool[Math.floor(Math.random() * pool.length)] || 'A';
+  // Las letras salen de un mazo que se guarda: no se repiten ni entre partidas hasta que salgan todas.
+  function sacarLetra(ctx, usadas) {
+    const dif = ctx.memoria.op.dificiles;
+    const letras = [...(dif ? FACILES + DIFICILES : FACILES)];
+    for (let k = 0; k < 40; k++) {
+      const l = App.sacar('tutti:letras:' + (dif ? 'd' : 'f'), letras);
+      if (!usadas.includes(l)) return l;
+    }
+    return letras.find(l => !usadas.includes(l)) || letras[0];
+  }
+
+  // `repetir`: se juega otra vez la misma ronda con una letra nueva (los puntos no cambian).
+  function nuevaRonda(ctx, base, repetir = false) {
+    const letra = sacarLetra(ctx, base.usadas);
+    clearTimeout(esperaHost);
     ctx.memoria.resp = {};
     ctx.memoria.fin = base.seg ? Date.now() + (base.seg + 3) * 1000 : 0;
-    ctx.publicar({ ...base, fase: 'escribir', numero: base.numero + 1, letra, usadas: [...base.usadas, letra], terminaron: [], basta: null, restante: base.seg ? base.seg * 1000 : 0 });
+    ctx.publicar({ ...base, fase: 'escribir', numero: base.numero + (repetir ? 0 : 1), letra, usadas: [...base.usadas, letra], terminaron: [], basta: null, propuesta: null, restante: base.seg ? base.seg * 1000 : 0 });
   }
 
   function cortar(ctx, quien) {
@@ -75,8 +96,20 @@ JUEGOS_RED.tutti = (() => {
     const e = ctx.estado;
     if (!e || e.juego !== 'tutti' || !e.ronda.includes(de)) return;
     const host = de === ctx.yo;
-    if (a.tipo === 'tiempo' && host) cortar(ctx, null);
-    else if (a.tipo === 'basta' && e.fase === 'escribir') cortar(ctx, de);
+    if (a.tipo === 'tiempo' && e.fase === 'escribir') {
+      // Corta cualquiera cuyo reloj llegó a 0 (por si el celu del anfitrión está bloqueado),
+      // salvo que según el anfitrión falte bastante.
+      if (ctx.memoria.fin && Date.now() < ctx.memoria.fin - 8000) return;
+      cortar(ctx, null);
+    } else if (a.tipo === 'proponer' && !e.propuesta && ['reiniciar', 'terminar'].includes(a.cual) && e.fase !== 'final') {
+      ctx.publicar({ ...e, propuesta: { cual: a.cual, de, si: [de] } });
+      revisarPropuesta(ctx);
+    } else if (a.tipo === 'votoPropuesta' && e.propuesta) {
+      if (!a.si) ctx.publicar({ ...e, propuesta: null, rechazo: { cual: e.propuesta.cual, quien: de, vez: Date.now() } });
+      else if (!e.propuesta.si.includes(de)) { ctx.publicar({ ...e, propuesta: { ...e.propuesta, si: [...e.propuesta.si, de] } }); revisarPropuesta(ctx); }
+    } else if (a.tipo === 'cancelarPropuesta' && e.propuesta && e.propuesta.de === de) {
+      ctx.publicar({ ...e, propuesta: null });
+    } else if (a.tipo === 'basta' && e.fase === 'escribir') cortar(ctx, de);
     else if (a.tipo === 'listo' && e.fase === 'escribir' && !e.terminaron.includes(de)) ctx.publicar({ ...e, terminaron: [...e.terminaron, de] });
     else if (a.tipo === 'respuestas' && e.fase === 'juntando' && a.numero === e.numero) {
       ctx.memoria.resp = { ...(ctx.memoria.resp || {}), [de]: (a.lista || []).slice(0, e.cats.length).map(x => String(x || '').slice(0, 40)) };
@@ -97,6 +130,15 @@ JUEGOS_RED.tutti = (() => {
     else if (a.tipo === 'sala' && host) ctx.aLaSala();
   }
 
+  // Si todos los que están conectados aceptaron, se aplica.
+  function revisarPropuesta(ctx) {
+    const e = ctx.estado;
+    if (!e.propuesta || !presentes(ctx).every(id => e.propuesta.si.includes(id))) return;
+    const { respuestas, anuladas, puntos, ...base } = e;
+    if (e.propuesta.cual === 'reiniciar') nuevaRonda(ctx, { ...base, propuesta: null }, e.fase === 'escribir' || e.fase === 'juntando' || e.fase === 'revision');
+    else { clearTimeout(esperaHost); ctx.memoria.fin = 0; ctx.publicar({ ...base, fase: 'final', propuesta: null, terminada: true }); }
+  }
+
   // ---------- Pantallas ----------
   const N = (ctx, id) => App.esc(ctx.nombreDe(id));
   const total = (e, id) => e.puntos[id].reduce((s, x) => s + x, 0);
@@ -107,23 +149,26 @@ JUEGOS_RED.tutti = (() => {
     if (e.fase === 'escribir') {
       const b = App.leer(borradorClave(ctx), []);
       return `${cab}
-        <div class="tt-form" data-tutti="${e.numero}">
+        <div id="tt-propuesta">${propuestaHTML(ctx)}</div>
+        <div class="tt-form" data-tutti="${e.numero}${e.letra}">
           ${e.cats.map((c, i) => `
-            <label class="tt-campo"><span>${App.esc(c)}</span>
-              <input data-c="${i}" maxlength="40" autocomplete="off" autocorrect="off" autocapitalize="sentences" enterkeyhint="next" value="${App.esc(b[i] || '')}" placeholder="${e.letra}…">
-            </label>`).join('')}
+            <div class="tt-campo"><span aria-hidden="true">${App.esc(c)}</span>
+              <input data-c="${i}" name="tt${Math.random().toString(36).slice(2, 8)}" aria-label="${App.esc(c)}" maxlength="40" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="sentences" enterkeyhint="next" data-form-type="other" value="${App.esc(b[i] || '')}" placeholder="${e.letra}…">
+            </div>`).join('')}
         </div>
         <p class="nota" id="tt-faltan"></p>
         <button class="btn grande rojo" id="basta" data-sin>✋ ¡BASTA!</button>
-        <p class="nota" id="tt-terminaron"></p>`;
+        <p class="nota" id="tt-terminaron"></p>
+        ${botonesPropuesta()}`;
     }
     if (e.fase === 'juntando') {
-      return `${cab}<div class="red-espera">
+      return `${cab}<div id="tt-propuesta">${propuestaHTML(ctx)}</div><div class="red-espera">
         <div class="tt-basta">${e.basta ? `✋ ¡BASTA!<small>lo cantó ${N(ctx, e.basta)}</small>` : '⏰ ¡Tiempo!'}</div>
         <div class="puntitos"><i></i><i></i><i></i></div><p>Juntando respuestas…</p></div>`;
     }
     if (e.fase === 'revision') {
       return `${cab}
+        <div id="tt-propuesta">${propuestaHTML(ctx)}</div>
         ${host ? '<p class="bajada">Tocá una respuesta que no valga para anularla</p>' : '<p class="bajada">El anfitrión revisa las respuestas</p>'}
         ${e.cats.map((c, i) => `
           <div class="tt-cat">
@@ -137,20 +182,62 @@ JUEGOS_RED.tutti = (() => {
             }).join('')}
           </div>`).join('')}
         <div class="tt-sub">${e.ronda.map(id => `<span>${N(ctx, id)}: <b>+${total(e, id)}</b></span>`).join('')}</div>
-        ${host ? '<button class="btn grande verde" id="sumar">Sumar puntos</button>' : ''}`;
+        ${host ? '<button class="btn grande verde" id="sumar">Sumar puntos</button>' : ''}
+        ${botonesPropuesta()}`;
     }
     // tabla o final
     const orden = [...e.ronda].sort((a, b) => e.totales[b] - e.totales[a]);
     const final = e.fase === 'final';
     return `
-      ${final ? `<div class="copa">🏆</div><h2 class="centro tt-ganador">¡Ganó ${N(ctx, orden[0])}!</h2>` : `<h2 class="centro">Tabla después de la ronda ${e.numero}</h2>`}
+      ${final ? '' : `<div id="tt-propuesta">${propuestaHTML(ctx)}</div>`}
+      ${final ? `<div class="copa">🏆</div><h2 class="centro tt-ganador">¡Ganó ${N(ctx, orden[0])}!</h2>${e.terminada ? `<p class="nota centro">Partida terminada de común acuerdo en la ronda ${e.numero}</p>` : ''}` : `<h2 class="centro">Tabla después de la ronda ${e.numero}</h2>`}
       <ol class="podio">
         ${orden.map((id, k) => `<li class="${['amarillo', 'celeste', 'naranja'][k] || 'violeta'}"><span>${['🥇', '🥈', '🥉'][k] || k + 1 + '°'}</span><b>${N(ctx, id)}${id === ctx.yo ? ' (vos)' : ''}</b><strong>${e.totales[id]}</strong></li>`).join('')}
       </ol>
       ${host ? (final
         ? '<div class="acciones"><button class="btn grande verde" id="otra">Otra partida</button><button class="btn violeta" id="sala">Volver a la sala</button></div>'
         : `<div class="acciones"><button class="btn grande verde" id="siguiente">Siguiente ronda (${e.numero + 1}/${e.rondas})</button></div>`)
-        : '<p class="red-aviso">Esperando al anfitrión…</p>'}`;
+        : '<p class="red-aviso">Esperando al anfitrión…</p>'}
+      ${final ? '' : botonesPropuesta(true)}`;
+  }
+
+  const TEXTO_PROP = { reiniciar: 'reiniciar la ronda con otra letra', terminar: 'terminar la partida así como está' };
+
+  // Cartel de la propuesta en curso (o de la última rechazada).
+  function propuestaHTML(ctx) {
+    const e = ctx.estado, p = e.propuesta;
+    if (!p) {
+      if (e.rechazo && Date.now() - e.rechazo.vez < 6000) return `<p class="red-aviso">${N(ctx, e.rechazo.quien)} no quiso ${TEXTO_PROP[e.rechazo.cual]}</p>`;
+      return '';
+    }
+    const hay = presentes(ctx);
+    const cuenta = `${p.si.filter(id => hay.includes(id)).length}/${hay.length} de acuerdo`;
+    if (p.de === ctx.yo) return `<div class="tb-pide"><span>Propusiste ${TEXTO_PROP[p.cual]} · ${cuenta}</span><button class="btn chico gris" data-prop="cancelar">Cancelar</button></div>`;
+    if (p.si.includes(ctx.yo)) return `<div class="tb-pide"><span>Aceptaste ${TEXTO_PROP[p.cual]} · ${cuenta}</span></div>`;
+    return `<div class="tb-pide"><span><b>${N(ctx, p.de)}</b> propone ${TEXTO_PROP[p.cual]} · ${cuenta}</span>
+      <div class="fila"><button class="btn chico gris" data-prop="no">No</button><button class="btn chico verde" data-prop="si">Dale</button></div></div>`;
+  }
+
+  const botonesPropuesta = (sinReiniciar = false) => `<div class="sd-herramientas tt-prop-botones">
+      ${sinReiniciar ? '' : '<button class="herr" data-proponer="reiniciar"><span>🔄</span>Reiniciar ronda</button>'}
+      <button class="herr" data-proponer="terminar"><span>🏁</span>Terminar partida</button>
+    </div>`;
+
+  function enlazarPropuesta(el, ctx) {
+    el.querySelectorAll('[data-prop]').forEach(b => {
+      b.onclick = () => {
+        const v = b.dataset.prop;
+        if (v === 'cancelar') ctx.accion({ tipo: 'cancelarPropuesta' });
+        else ctx.accion({ tipo: 'votoPropuesta', si: v === 'si' });
+      };
+    });
+    el.querySelectorAll('[data-proponer]').forEach(b => {
+      b.disabled = !!ctx.estado.propuesta;
+      b.onclick = async () => {
+        const cual = b.dataset.proponer;
+        if (await App.preguntar(`¿Proponer ${TEXTO_PROP[cual]}? Tienen que estar todos de acuerdo.`, 'Proponer', 'No')) ctx.accion({ tipo: 'proponer', cual });
+      };
+    });
   }
 
   function leerCampos(el) { return [...el.querySelectorAll('.tt-form input')].map(i => i.value.trim()); }
@@ -158,8 +245,11 @@ JUEGOS_RED.tutti = (() => {
   // Mientras se escribe no se redibuja la pantalla (se perdería lo escrito): solo se actualizan los avisos.
   function mantener(el, ctx) {
     const e = ctx.estado;
-    if (e.fase !== 'escribir' || !el.querySelector(`[data-tutti="${e.numero}"]`)) return false;
+    if (e.fase !== 'escribir' || !el.querySelector(`[data-tutti="${e.numero}${e.letra}"]`)) return false;
     avisos(el, ctx);
+    const caja = el.querySelector('#tt-propuesta');
+    if (caja) caja.innerHTML = propuestaHTML(ctx);
+    enlazarPropuesta(el, ctx);
     return true;
   }
 
@@ -178,10 +268,12 @@ JUEGOS_RED.tutti = (() => {
 
   function enlazar(el, ctx) {
     const e = ctx.estado, host = ctx.esAnfitrion;
-    const fase = `${e.fase}:${e.numero}`;
+    const fase = `${e.fase}:${e.numero}:${e.letra}`;
     const nueva = fase !== faseVista;
     faseVista = fase;
     clearInterval(reloj);
+    limpiarBorradores(e.partida);
+    enlazarPropuesta(el, ctx);
 
     if (e.fase === 'escribir') {
       if (nueva) {
@@ -210,8 +302,9 @@ JUEGOS_RED.tutti = (() => {
         elReloj.textContent = `⏱ ${s}`;
         elReloj.classList.toggle('apurado', s <= 10);
         if (s <= 10 && s > 0) Sonido.tic();
-        // El anfitrión es el que corta oficialmente cuando se termina el tiempo.
+        // Cuando se termina el tiempo, avisa el anfitrión o cualquiera (por si el del anfitrión está bloqueado).
         if (host && ctx.memoria.fin && Date.now() > ctx.memoria.fin) { ctx.memoria.fin = 0; ctx.accion({ tipo: 'tiempo' }); }
+        else if (Date.now() > finLocal + 2000 && Date.now() - avisoTiempo > 4000) { avisoTiempo = Date.now(); ctx.accion({ tipo: 'tiempo' }); }
       };
       tic();
       reloj = setInterval(tic, 1000);
@@ -269,6 +362,7 @@ JUEGOS_RED.tutti = (() => {
       const e = ctx.estado;
       if (!ctx.esAnfitrion || !e) return;
       if (e.fase === 'juntando' && presentes(ctx).every(id => (ctx.memoria.resp || {})[id])) puntuar(ctx);
+      if (e.propuesta) revisarPropuesta(ctx);
     },
   };
 })();

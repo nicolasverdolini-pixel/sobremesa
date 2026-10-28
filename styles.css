@@ -1033,3 +1033,6 @@ h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.01em; }
 .tr-reglas { margin-top: 12px; background: rgba(255, 255, 255, .06); border-radius: 14px; padding: 8px 12px; }
 .tr-reglas summary { cursor: pointer; font-family: var(--fuente); }
 .red-opciones { max-height: 88vh; overflow-y: auto; }
+
+.tt-prop-botones { margin-top: 18px; opacity: .9; }
+.tt-prop-botones .herr { font-size: .78rem; }
