@@ -85,10 +85,7 @@ const Sala = (() => {
     if (nueva) App.guardar('red:memoria:' + codigo, {});
     App.guardar('red:ultima', { codigo, cuando: Date.now() });
     App.despierto(true);
-    pantalla = App.pantalla({ titulo: 'Sala ' + codigo, volver: () => salir(true), confirmar: '¿Salir de la sala?', clase: 'red-sala', html: `
-      <div class="red-estado" id="red-estado">Conectando…</div>
-      <div id="sala-cuerpo"></div>` });
-    App.alSalir(() => salir(false));
+    armarPantalla();
     conn = Red.conectar(codigo, nombre, {
       bienvenida(id, est) { yo = id; estado = est; dibujar(); },
       presencia(m) {
@@ -119,6 +116,19 @@ const Sala = (() => {
       conexion(si) { conectado = si; pintarEstado(); },
     });
   }
+
+  let afuera = false; // jugando un duelo a pantalla completa, sin cortar la conexión
+
+  function armarPantalla() {
+    pantalla = App.pantalla({ titulo: 'Sala ' + cod, volver: () => salir(true), confirmar: '¿Salir de la sala?', clase: 'red-sala', html: `
+      <div class="red-estado" id="red-estado">${conectado ? '' : 'Conectando…'}</div>
+      <div id="sala-cuerpo"></div>` });
+    App.alSalir(() => { if (!afuera) salir(false); });
+  }
+
+  // Para los duelos: el juego ocupa toda la pantalla y después se vuelve a la sala, siempre conectados.
+  ctx.jugarAfuera = abrir => { afuera = true; abrir(); };
+  ctx.volverALaSala = () => { afuera = false; App.despierto(true); armarPantalla(); dibujar(); };
 
   function salir(alMenu) {
     if (conn) { conn.cerrar(); conn = null; }

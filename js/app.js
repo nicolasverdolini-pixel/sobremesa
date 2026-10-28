@@ -25,6 +25,17 @@ const App = (() => {
     return lista[i];
   }
 
+  // Números al azar repetibles: con la misma semilla salen siempre los mismos (para los duelos en red).
+  function azarCon(semilla) {
+    let a = semilla >>> 0;
+    return () => {
+      a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
   const vibrar = p => { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
 
   // Que la pantalla no se apague mientras se juega.
@@ -211,5 +222,5 @@ const App = (() => {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   }
 
-  return { esc, leer, guardar, mezclar, sacar, vibrar, despierto, pantalla, alSalir, preguntar, listaJugadores, confeti, menu };
+  return { esc, leer, guardar, mezclar, sacar, azarCon, vibrar, despierto, pantalla, alSalir, preguntar, listaJugadores, confeti, menu };
 })();

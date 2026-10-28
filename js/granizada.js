@@ -13,6 +13,8 @@ const Granizada = (() => {
   const VIDAS = 3;
 
   let control = App.leer('granizada:control', 'dedo');
+  // En un duelo en red, todos reciben lo mismo en el mismo orden (azar con semilla).
+  let duelo = null, azar = Math.random;
 
   function inicio() {
     App.despierto(false);
@@ -249,20 +251,20 @@ const Granizada = (() => {
 
     function elegir() {
       const pGranizo = Math.min(0.5, 0.16 + J.t * 0.006);
-      if (Math.random() < pGranizo) return 'granizo';
+      if (azar() < pGranizo) return 'granizo';
       const lista = Object.entries(COSAS);
-      let r = Math.random() * lista.reduce((s, [, c]) => s + c.peso, 0);
+      let r = azar() * lista.reduce((s, [, c]) => s + c.peso, 0);
       for (const [k, c] of lista) { r -= c.peso; if (r <= 0) return k; }
       return 'chori';
     }
 
     function soltar() {
       const tipo = elegir();
-      const s = tipo === 'granizo' ? tam() * (0.55 + Math.random() * 0.35) : tam();
+      const s = tipo === 'granizo' ? tam() * (0.55 + azar() * 0.35) : tam();
       J.cosas.push({
-        tipo, s, x: s * 1.3 + Math.random() * (W - s * 2.6), y: -s * 2,
-        v: H * (0.22 + Math.min(J.t, 150) * 0.0045) * (tipo === 'granizo' ? 1.25 : 1) * (0.85 + Math.random() * 0.3),
-        rot: Math.random() * 6, vr: (Math.random() - 0.5) * 3,
+        tipo, s, x: s * 1.3 + azar() * (W - s * 2.6), y: -s * 2,
+        v: H * (0.22 + Math.min(J.t, 150) * 0.0045) * (tipo === 'granizo' ? 1.25 : 1) * (0.85 + azar() * 0.3),
+        rot: azar() * 6, vr: (azar() - 0.5) * 3,
       });
     }
 
@@ -339,14 +341,14 @@ const Granizada = (() => {
       J.proxima -= dt * lentitud;
       if (J.proxima <= 0) {
         soltar();
-        J.proxima = Math.max(0.22, 0.85 - J.t * 0.0065) * (0.7 + Math.random() * 0.6);
+        J.proxima = Math.max(0.22, 0.85 - J.t * 0.0065) * (0.7 + azar() * 0.6);
       }
 
       // Rayos: aviso con una franja que titila y después el golpe.
       if (J.t > J.proximoRayo) {
-        J.proximoRayo = J.t + Math.max(4, 10 - J.t * 0.03) + Math.random() * 4;
+        J.proximoRayo = J.t + Math.max(4, 10 - J.t * 0.03) + azar() * 4;
         const rw = w * 0.9;
-        J.rayos.push({ x: rw / 2 + Math.random() * (W - rw), w: rw, t: 0 });
+        J.rayos.push({ x: rw / 2 + azar() * (W - rw), w: rw, t: 0 });
       }
       for (const r of J.rayos) {
         r.t += dt * lentitud;
@@ -469,7 +471,7 @@ const Granizada = (() => {
         const b = e.target.closest('[data-r]');
         if (!b) return;
         d.remove();
-        if (b.dataset.r === 'salir') inicio(); else pausar(false);
+        if (b.dataset.r === 'salir') { if (duelo) salirDuelo(false); else inicio(); } else pausar(false);
       });
     }
     p.querySelector('#pausa').onclick = () => pausar(true);
@@ -478,6 +480,20 @@ const Granizada = (() => {
 
     function terminar() {
       J.fin = true;
+      if (duelo) {
+        Sonido.fin();
+        duelo.alTerminar({ valor: J.puntos, texto: `${J.puntos} puntos` });
+        setTimeout(() => {
+          if (!vivo) return;
+          const d = document.createElement('div');
+          d.className = 'modal ver';
+          d.innerHTML = `<div class="modal-caja ganador"><span class="emo">⛈️</span><h2>¡Se largó la tormenta!</h2><p>${J.puntos} puntos · ${Math.floor(J.t)} segundos</p>
+            <button class="btn grande verde" data-r="sala">Ver la tabla del duelo</button></div>`;
+          document.body.appendChild(d);
+          d.querySelector('[data-r]').onclick = () => { d.remove(); salirDuelo(true); };
+        }, 900);
+        return;
+      }
       const record = App.leer('granizada:record', 0);
       const nuevo = J.puntos > record;
       if (nuevo) App.guardar('granizada:record', J.puntos);
@@ -504,6 +520,7 @@ const Granizada = (() => {
       }, 900);
     }
 
+    puntosActuales = () => J.puntos;
     App.alSalir(() => {
       vivo = false;
       cancelAnimationFrame(cuadro);
@@ -515,5 +532,27 @@ const Granizada = (() => {
     });
   }
 
-  return { inicio };
+  // ---------- Duelo en red ----------
+  let puntosActuales = () => 0;
+  let controlAntes = control;
+  function desafio(semilla, cb) {
+    duelo = cb;
+    controlAntes = control;
+    control = 'dedo'; // en el duelo, con el dedo (inclinar pide permisos)
+    azar = App.azarCon(semilla);
+    Sonido.desbloquear();
+    jugar();
+  }
+
+  function salirDuelo(termino) {
+    const d = duelo;
+    if (!d) return;
+    if (!termino) d.alTerminar({ valor: puntosActuales(), texto: `${puntosActuales()} puntos (abandonó)` });
+    duelo = null;
+    azar = Math.random;
+    control = controlAntes;
+    d.volver();
+  }
+
+  return { inicio, desafio };
 })();

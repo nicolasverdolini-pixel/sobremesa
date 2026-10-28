@@ -106,7 +106,8 @@ const Crucigrama = (() => {
   }
 
   let st = App.leer('cruci:partida', null);
-  const guardar = () => App.guardar('cruci:partida', st);
+  let duelo = null; // en un duelo en red no se toca el crucigrama guardado
+  const guardar = () => { if (!duelo) App.guardar('cruci:partida', st); };
   const fmt = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
   function inicio() {
@@ -159,7 +160,7 @@ const Crucigrama = (() => {
     const numeros = {};
     palabras.forEach(w => { numeros[w.r * ancho + w.c] = w.num; });
 
-    const p = App.pantalla({ titulo: 'Crucigrama', volver: inicio, clase: 'cruci', html: `
+    const p = App.pantalla({ titulo: duelo ? 'Crucigrama · Duelo' : 'Crucigrama', volver: duelo ? () => salirDuelo() : inicio, clase: 'cruci', html: `
       <div class="cr-tablero" id="tablero" style="--cols:${ancho};--rows:${alto}">
         ${sol.map((x, i) => x
           ? `<button class="cr-celda" data-i="${i}" data-sin>${numeros[i] ? `<small>${numeros[i]}</small>` : ''}<span></span></button>`
@@ -173,8 +174,8 @@ const Crucigrama = (() => {
       <div class="cr-herramientas">
         <button class="herr" id="lista"><span>📋</span>Pistas</button>
         <button class="herr" id="revisar"><span>🔍</span>Revisar</button>
-        <button class="herr" id="letra"><span>💡</span>Letra</button>
-        <button class="herr" id="palabra"><span>🪄</span>Palabra</button>
+        <button class="herr" id="letra" ${duelo ? 'disabled' : ''}><span>💡</span>Letra</button>
+        <button class="herr" id="palabra" ${duelo ? 'disabled' : ''}><span>🪄</span>Palabra</button>
       </div>
       <div class="teclado" id="teclado">
         ${['QWERTYUIOP', 'ASDFGHJKLÑ', 'ZXCVBNM⌫'].map(f => `<div class="fila-t">${[...f].map(l => `<button data-l="${l}" data-sin class="${l === '⌫' ? 'borrar' : ''}">${l}</button>`).join('')}</div>`).join('')}
@@ -253,6 +254,11 @@ const Crucigrama = (() => {
       pintar();
       Sonido.ganar();
       App.confeti(150);
+      if (duelo) {
+        duelo.alTerminar({ valor: st.tiempo, texto: fmt(st.tiempo) });
+        setTimeout(() => finDuelo(`${NIVELES[st.nivel].nombre} en ${fmt(st.tiempo)}`), 900);
+        return;
+      }
       setTimeout(() => {
         const d = document.createElement('div');
         d.className = 'modal ver';
@@ -353,5 +359,30 @@ const Crucigrama = (() => {
     irA(palabras.find(w => !correcta(w)) || palabras[0]);
   }
 
-  return { inicio, generar };
+  // ---------- Duelo en red: todos juegan el mismo tablero; gana el que lo termina más rápido ----------
+  function desafio(datos, cb) {
+    duelo = { ...cb, anterior: st };
+    st = { ...datos, entrada: datos.sol.map(() => ''), fijas: datos.sol.map(() => false), pistas: 0, tiempo: 0, completo: false };
+    jugar();
+  }
+
+  function salirDuelo() {
+    const d = duelo;
+    if (!d) return;
+    if (!st.completo) d.alTerminar({ valor: null, texto: 'abandonó' });
+    duelo = null;
+    st = d.anterior;
+    d.volver();
+  }
+
+  function finDuelo(texto) {
+    const d = document.createElement('div');
+    d.className = 'modal ver';
+    d.innerHTML = `<div class="modal-caja ganador"><span class="emo">🏁</span><h2>¡Terminaste!</h2><p>${texto}</p>
+      <button class="btn grande verde" data-r="sala">Ver la tabla del duelo</button></div>`;
+    document.body.appendChild(d);
+    d.querySelector('[data-r]').onclick = () => { d.remove(); salirDuelo(); };
+  }
+
+  return { inicio, generar, desafio };
 })();

@@ -6,10 +6,12 @@ const Racimo = (() => {
   const FORMAS = ['●', '▲', '■', '◆', '★', '♥'];
 
   let st = App.leer('racimo:partida', null);
-  const guardar = () => App.guardar('racimo:partida', st);
+  // En un duelo en red: todos reciben las mismas fichas (azar con semilla) y no se toca la partida guardada.
+  let duelo = null, azar = Math.random;
+  const guardar = () => { if (!duelo) App.guardar('racimo:partida', st); };
   const nuevaPartida = () => ({
     tab: new Array(R.N * R.N).fill(null),
-    cola: [R.fichaNueva(0), R.fichaNueva(0), R.fichaNueva(0)],
+    cola: [R.fichaNueva(0, azar), R.fichaNueva(0, azar), R.fichaNueva(0, azar)],
     puntos: 0, desde: 0, jugadas: 0, terminado: false,
   });
 
@@ -53,7 +55,7 @@ const Racimo = (() => {
     const espera = ms => new Promise(r => setTimeout(r, ms));
     let vivo = true;
 
-    const p = App.pantalla({ titulo: 'Racimo', volver: inicio, clase: 'racimo', html: `
+    const p = App.pantalla({ titulo: duelo ? 'Racimo · Duelo' : 'Racimo', volver: duelo ? () => salirDuelo() : inicio, clase: 'racimo', html: `
       <div class="rc-marcador">
         <div><small>Puntos</small><b id="puntos">0</b></div>
         <div><small>Récord</small><b id="record">0</b></div>
@@ -95,7 +97,7 @@ const Racimo = (() => {
       let f = st.cola.shift();
       if (f.comodin) f = { c: R.colorComodin(st.tab, i, R.coloresPara(st.puntos)) };
       st.tab[i] = { c: f.c };
-      st.cola.push(R.fichaNueva(st.puntos));
+      st.cola.push(R.fichaNueva(st.puntos, azar));
       st.jugadas++;
       Sonido.poner();
       pintar(new Map([[i, 'cae']]));
@@ -129,7 +131,7 @@ const Racimo = (() => {
         const vacias = st.tab.map((x, j) => x ? -1 : j).filter(j => j >= 0);
         if (vacias.length) {
           await espera(250);
-          const j = vacias[Math.floor(Math.random() * vacias.length)];
+          const j = vacias[Math.floor(azar() * vacias.length)];
           st.tab[j] = { p: R.durezaPiedra(st.puntos) };
           Sonido.piedra();
           App.vibrar(60);
@@ -147,6 +149,12 @@ const Racimo = (() => {
 
     function terminar() {
       st.terminado = true;
+      if (duelo) {
+        Sonido.fin();
+        duelo.alTerminar({ valor: st.puntos, texto: `${st.puntos} puntos` });
+        setTimeout(() => finDuelo(`${st.puntos} puntos en ${st.jugadas} jugadas`), 900);
+        return;
+      }
       const record = App.leer('racimo:record', 0);
       const nuevo = st.puntos > record;
       if (nuevo) App.guardar('racimo:record', st.puntos);
@@ -182,5 +190,33 @@ const Racimo = (() => {
     pintar();
   }
 
-  return { inicio };
+  // ---------- Duelo en red ----------
+  function desafio(semilla, cb) {
+    duelo = { ...cb, anterior: st };
+    azar = App.azarCon(semilla);
+    st = nuevaPartida();
+    jugar();
+  }
+
+  function finDuelo(texto) {
+    const d = document.createElement('div');
+    d.className = 'modal ver';
+    d.innerHTML = `<div class="modal-caja ganador"><span class="emo">🍇</span><h2>¡Se llenó!</h2><p>${texto}</p>
+      <button class="btn grande verde" data-r="sala">Ver la tabla del duelo</button></div>`;
+    document.body.appendChild(d);
+    d.querySelector('[data-r]').onclick = () => { d.remove(); salirDuelo(); };
+  }
+
+  // Si se va antes de terminar, cuenta lo que llevaba.
+  function salirDuelo() {
+    const d = duelo;
+    if (!d) return;
+    if (!st.terminado) d.alTerminar({ valor: st.puntos, texto: `${st.puntos} puntos (abandonó)` });
+    duelo = null;
+    azar = Math.random;
+    st = d.anterior;
+    d.volver();
+  }
+
+  return { inicio, desafio };
 })();

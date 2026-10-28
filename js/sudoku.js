@@ -64,7 +64,8 @@ const Sudoku = (() => {
   }
 
   let st = App.leer('sudoku:partida', null);
-  const guardar = () => App.guardar('sudoku:partida', st);
+  let duelo = null; // en un duelo en red no se toca la partida guardada ni los récords
+  const guardar = () => { if (!duelo) App.guardar('sudoku:partida', st); };
   const fmt = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
   function inicio() {
@@ -111,7 +112,7 @@ const Sudoku = (() => {
     let notas = false;
     const hist = [];
 
-    const p = App.pantalla({ titulo: 'Sudoku', volver: inicio, clase: 'sudoku', html: `
+    const p = App.pantalla({ titulo: duelo ? 'Sudoku · Duelo' : 'Sudoku', volver: duelo ? () => salirDuelo() : inicio, clase: 'sudoku', html: `
       <div class="sd-info">
         <span>${NIVELES[st.nivel].emoji} ${NIVELES[st.nivel].nombre}</span>
         <span id="errores"></span>
@@ -124,7 +125,7 @@ const Sudoku = (() => {
         <button class="herr" id="deshacer"><span>↩︎</span>Deshacer</button>
         <button class="herr" id="borrar"><span>⌫</span>Borrar</button>
         <button class="herr" id="notas"><span>✏️</span>Notas <i id="notas-est">NO</i></button>
-        <button class="herr" id="pista"><span>💡</span>Pista</button>
+        <button class="herr" id="pista" ${duelo ? 'disabled' : ''}><span>💡</span>Pista</button>
       </div>
       <div class="sd-numeros" id="numeros">
         ${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => `<button class="sd-num" data-n="${n}" data-sin>${n}<small></small></button>`).join('')}
@@ -201,6 +202,13 @@ const Sudoku = (() => {
       st.completo = true;
       guardar();
       clearInterval(intervalo);
+      if (duelo) {
+        duelo.alTerminar({ valor: st.tiempo, texto: `${fmt(st.tiempo)} · ${st.errores} errores` });
+        Sonido.ganar();
+        App.confeti(150);
+        setTimeout(() => finDuelo(`${NIVELES[st.nivel].nombre} en ${fmt(st.tiempo)} · ${st.errores} errores`), 900);
+        return;
+      }
       const records = App.leer('sudoku:records', {});
       const record = !st.pistas && (!records[st.nivel] || st.tiempo < records[st.nivel]);
       if (record) { records[st.nivel] = st.tiempo; App.guardar('sudoku:records', records); }
@@ -299,5 +307,30 @@ const Sudoku = (() => {
     pintar();
   }
 
-  return { inicio, generar };
+  // ---------- Duelo en red: todos juegan el mismo tablero; gana el que lo termina más rápido ----------
+  function desafio(datos, cb) {
+    duelo = { ...cb, anterior: st };
+    st = { nivel: datos.nivel, puzzle: datos.puzzle, sol: datos.sol, valores: datos.puzzle.slice(), notas: new Array(81).fill(0), errores: 0, tiempo: 0, completo: false, pistas: 0 };
+    jugar();
+  }
+
+  function salirDuelo() {
+    const d = duelo;
+    if (!d) return;
+    if (!st.completo) d.alTerminar({ valor: null, texto: 'abandonó' });
+    duelo = null;
+    st = d.anterior;
+    d.volver();
+  }
+
+  function finDuelo(texto) {
+    const d = document.createElement('div');
+    d.className = 'modal ver';
+    d.innerHTML = `<div class="modal-caja ganador"><span class="emo">🏁</span><h2>¡Terminaste!</h2><p>${texto}</p>
+      <button class="btn grande verde" data-r="sala">Ver la tabla del duelo</button></div>`;
+    document.body.appendChild(d);
+    d.querySelector('[data-r]').onclick = () => { d.remove(); salirDuelo(); };
+  }
+
+  return { inicio, generar, desafio };
 })();
