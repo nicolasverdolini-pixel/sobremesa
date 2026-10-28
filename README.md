@@ -13,6 +13,7 @@ Juegos para jugar con amigos y familia en la juntada. Se instala en el celu como
 - **Racimo** — para jugar solo: juego de bloques propio. Juntá 4 del mismo color, explotan y contagian a las vecinas. Reglas en `js/racimo-reglas.js`.
 - **Solitario** — para jugar solo: el clásico Klondike, arrastrando las cartas o con un toque.
 - **Klotski** — para jugar solo: sacá el bloque grande de la caja. 32 niveles generados y verificados con un resolvedor (`js/klotski-reglas.js`), que también da las pistas.
+- **Nonogramas** — para jugar solo: pintar por números. 13 dibujos y tableros al azar de 5×5, 10×10 y 15×15, todos verificados con un resolvedor lógico (`js/nonograma-reglas.js`).
 - **Sudoku** — para jugar solo: cuatro niveles, cada tablero se genera al azar con solución única.
 - **Crucigrama** — para jugar solo: tres niveles, la grilla se arma al azar con el banco de `js/crucigrama-palabras.js`.
 - **Anotador de Truco** — Nosotros / Ellos, a 15 o a 30, con palitos de fósforo.

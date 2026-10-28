@@ -1142,3 +1142,44 @@ h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.01em; }
 .kl-bloque.agarrado span { filter: brightness(1.15); }
 .kl-bloque.pista span { animation: latir .5s ease-in-out 2; outline: 3px solid #fff; }
 .kl-bloque.tG.sale { transform: translateY(130%); opacity: 0; }
+
+/* =========================================================
+   Nonogramas
+   ========================================================= */
+
+.nn-dibujos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.nn-dibujo {
+  border: 0; border-radius: 16px; background: var(--panel); box-shadow: 0 4px 0 #1a0f30;
+  aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 6px;
+}
+.nn-dibujo:active { transform: translateY(3px); box-shadow: 0 1px 0 #1a0f30; }
+.nn-dibujo small { font-size: .72rem; color: var(--suave); }
+.nn-dibujo.hecho { background: #3a2a62; }
+.nn-incognita { font-family: var(--fuente); font-size: 1.9rem; color: var(--amarillo); }
+.nn-mini { width: 56%; aspect-ratio: 1; display: grid; grid-template-columns: repeat(var(--n), 1fr); }
+.nn-mini i { display: block; }
+
+.nonograma { padding-bottom: calc(var(--abajo) + 10px); }
+.nonograma.grande { padding-left: 6px; padding-right: 6px; }
+.nonograma.grande .barra, .nonograma.grande .sd-info { margin-left: 10px; margin-right: 10px; }
+.nn-tablero { display: grid; margin: 4px auto 14px; width: max-content; user-select: none; touch-action: none; }
+.nn-esquina { }
+.nn-pc { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 3px; gap: 0; }
+.nn-pf { display: flex; justify-content: flex-end; align-items: center; gap: calc(var(--cs) * .14); padding-right: 4px; }
+.nn-pc span, .nn-pf span { font-family: var(--fuente); font-weight: 700; font-size: calc(var(--cs) * .56); line-height: 1.15; color: var(--texto); }
+.nn-pc.ok span, .nn-pf.ok span { color: rgba(201, 184, 239, .4); }
+.nn-pc:nth-child(odd) { background: rgba(255, 255, 255, .04); border-radius: 6px 6px 0 0; }
+.nn-c {
+  background: #fff8ec; border-right: 1px solid #d9cbe8; border-bottom: 1px solid #d9cbe8;
+  position: relative; transition: background .25s;
+}
+.nn-c.bd { border-right: 2.5px solid #2a1640; }
+.nn-c.bb { border-bottom: 2.5px solid #2a1640; }
+.nn-c.lleno { background: var(--violeta); box-shadow: inset 0 -3px 0 var(--violeta-s); }
+.nn-c.cruz::after { content: '✕'; position: absolute; inset: 0; display: grid; place-items: center; color: #9d8bc4; font-size: calc(var(--cs) * .6); font-weight: 800; }
+.nn-c.mal { background: #ffc2c9 !important; }
+.nn-c.mal.lleno { background: var(--rojo) !important; }
+.nn-tablero.ganado .nn-c { border-color: transparent; }
+.nn-tablero.ganado .nn-c:not(.lleno) { background: #fff8ec; }
+.nn-c.revela { animation: saltar .4s cubic-bezier(.2, 1.6, .4, 1); box-shadow: none; }
+.nn-herr { max-width: 320px; margin: 0 auto 6px; }
