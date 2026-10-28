@@ -1062,3 +1062,42 @@ h1, h2 { margin: 0; font-weight: 700; letter-spacing: -.01em; }
 .bomba-boom-red { text-align: center; background: radial-gradient(circle, #ffc93c, #ff8a3d 45%, #ff4d5e 85%); border-radius: 28px; padding: 18px; margin-bottom: 8px; }
 .bomba-boom-red h2 { font-size: 3.4rem; }
 .bomba-boom-red p { margin: 0; font-size: 1.2rem; }
+
+/* =========================================================
+   Solitario
+   ========================================================= */
+
+.sol-portada { display: flex; justify-content: center; height: 150px; margin: 10px 0 6px; }
+.sol-portada .carta { position: relative; width: 78px; height: 110px; margin: 0 -14px; transform: rotate(var(--g)); box-shadow: 0 6px 14px rgba(0, 0, 0, .35); }
+.sol-portada .c-grande { font-size: 2.4rem; }
+.sol-inicio #seguir small { font-size: .95rem; }
+
+.solitario { padding: calc(var(--arriba) + 12px) 8px calc(var(--abajo) + 8px); height: 100vh; height: 100dvh; max-width: 620px; }
+.solitario .barra { padding: 0 8px; }
+.sol-info { display: flex; justify-content: space-between; color: var(--suave); font-size: .9rem; margin: -6px 6px 8px; font-variant-numeric: tabular-nums; }
+.sol-arriba, .sol-mesa { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.sol-arriba { margin-bottom: 10px; }
+.sol-pila { position: relative; aspect-ratio: 5 / 7; border-radius: 7px; background: rgba(0, 0, 0, .22); border: 2px dashed rgba(255, 255, 255, .12); }
+.sol-pila.mazo { cursor: pointer; }
+.sol-pila .vacio, .sol-col > .vacio { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(255, 255, 255, .25); font-family: var(--fuente); font-size: 1.3rem; }
+.sol-mesa { flex: 1; min-height: 0; }
+.sol-col { position: relative; height: 100%; }
+.sol-col > .vacio { aspect-ratio: 5 / 7; bottom: auto; border-radius: 7px; background: rgba(0, 0, 0, .22); border: 2px dashed rgba(255, 255, 255, .12); }
+
+.carta {
+  position: absolute; left: 0; width: 100%; aspect-ratio: 5 / 7; border-radius: 7px;
+  background: #fffdf7; color: #1d1530; box-shadow: 0 1px 3px rgba(0, 0, 0, .45);
+  font-family: var(--fuente); font-weight: 700; touch-action: none; user-select: none;
+}
+.carta.roja { color: #d8283a; }
+.carta.dorso {
+  background: repeating-linear-gradient(45deg, rgba(255, 255, 255, .18) 0 5px, transparent 5px 10px), linear-gradient(160deg, var(--rosa), var(--violeta));
+  border: 2px solid #fff;
+}
+.carta .c-num { position: absolute; top: 2px; left: 4px; font-size: calc(var(--cw, 48px) * .3); line-height: 1; }
+.carta .c-palo { position: absolute; top: 2px; right: 3px; font-size: calc(var(--cw, 48px) * .26); line-height: 1; }
+.carta .c-grande { position: absolute; left: 0; right: 0; bottom: 8%; text-align: center; font-size: calc(var(--cw, 48px) * .5); line-height: 1; }
+.carta.arrastrada { z-index: 30; box-shadow: 0 10px 20px rgba(0, 0, 0, .5); transition: none; }
+.carta.no { animation: rc-golpe .3s; }
+.sol-pila .carta { top: 0; }
+.sol-herr { margin: 6px 0 0; }
